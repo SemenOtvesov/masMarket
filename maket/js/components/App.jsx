@@ -31,7 +31,7 @@ export default ()=>{
 
     return(
         <Routes>
-            <Route  path='/' element={<Layout/>}>
+            <Route  path='' element={<Layout/>}>
                 <Route index element={<MainStartPage prodList={prodList}/>}/>
                 <Route path='userProfile' element={<MainUserOrderPage user={user} rigthContent={UserProfile}/>}/>
                 <Route path='order' element={<MainUserOrderPage user={user} prodList={prodList} rigthContent={Order}/>}/>

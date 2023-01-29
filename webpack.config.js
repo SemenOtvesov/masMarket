@@ -1,5 +1,6 @@
 
 const path = require('node:path')
+const webpack = require('webpack')
 const HTMLPlug = require('html-webpack-plugin')
 const {CleanWebpackPlugin} = require('clean-webpack-plugin')
 const MiniCssEXtractPlugin = require('mini-css-extract-plugin')
@@ -46,9 +47,10 @@ module.exports = {
             '@elementUI': path.resolve(__dirname, 'maket/js/components/elementUI'),
             '@midleComponents': path.resolve(__dirname, 'maket/js/components/midleComponents'),
             '@mains': path.resolve(__dirname, 'maket/js/components/mains'),
+            process: "process/browser"
         }
     },
-    entry:'@js/script.jsx',
+    entry:'@js/script.js',
     output:{
         filename: 'bundle.[chunkhash].js',
         path: path.resolve(__dirname, 'public')
@@ -67,7 +69,10 @@ module.exports = {
             patterns: [
                 {from: path.resolve(__dirname, 'maket/img'), to: path.resolve(__dirname, 'public/img'), noErrorOnMissing: true}
             ]
-        })
+        }),
+        new webpack.ProvidePlugin({
+            process: 'process/browser',
+        }),
     ],
     module:{
         rules:[
