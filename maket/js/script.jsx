@@ -6,4 +6,4 @@ import { BrowserRouter } from 'react-router-dom'
 
 const wrap = document.querySelector('#wrap')
 
-ReactDOM.render(<BrowserRouter ><App /></BrowserRouter>, wrap)
+ReactDOM.render(<BrowserRouter basemname={`/${process.env.PUBLIC_URL}`}><App /></BrowserRouter>, wrap)
