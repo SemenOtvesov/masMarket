@@ -3,11 +3,14 @@
   "version": "1.0.0",
   "description": "my one experience in webpack",
   "private": true,
+  "homepage": "https://semenotvesov.github.io/masMarket-o/",
   "scripts": {
     "build": "cross-env NODE_ENV=production webpack --mode production",
     "dev": "cross-env NODE_ENV=development webpack --mode development",
     "serv": "cross-env NODE_ENV=development webpack-dev-server --mode development --open",
-    "servBuild": "cross-env NODE_ENV=production webpack-dev-server --mode production --open"
+    "servBuild": "cross-env NODE_ENV=production webpack-dev-server --mode production --open",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build"
   },
   "browserslist": "> 0.25%, not dead",
   "keywords": [
@@ -42,6 +45,7 @@
     "webpack-dev-server": "^4.11.1"
   },
   "dependencies": {
+    "gh-pages": "^5.0.0",
     "jquery": "^3.6.1",
     "normalize.css": "^8.0.1",
     "react-router-dom": "^6.6.2"
