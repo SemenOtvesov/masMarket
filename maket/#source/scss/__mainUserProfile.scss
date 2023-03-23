@@ -342,6 +342,7 @@
     padding: 10px;
     font-weight: 600;
     display: flex; align-items: center; justify-content: center; gap: 10px;
+    position: relative;
     text-align: center;
     &.disabled{opacity: 0.7;}
     & > picture, div{
@@ -355,6 +356,15 @@
     &.black{background-color: #000;}
     &.blue{background-color: $mainBlue;}
     &.gray{background-color: $grayColor; color: #000;}
+
+    &.passNotValid{
+        border-radius: 10px 10px 0 0;
+      & >.mainUserProfile__popap-input-falPass{
+        opacity: 1;
+        z-index: 10;
+        transform: translate(0, 100%);
+      }
+    }
   }
   &-separator{
     position: relative;

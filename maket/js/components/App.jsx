@@ -567,7 +567,12 @@ function windowListenerSubmit(setRegInfo, event){
 
         setRegInfo({userName, userSubname, userMail, userPass, userAge, userPhone, userGender})
     }else{
-        signInWithEmailAndPassword(auth, userMail, userPass)
+        signInWithEmailAndPassword(auth, userMail, userPass).catch(err=>{
+            target.querySelector('button').classList.add('passNotValid')
+            setTimeout(()=>{
+                target.querySelector('button').classList.remove('passNotValid')
+            },2000)
+        })
     }
 }
 

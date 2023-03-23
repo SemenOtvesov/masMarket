@@ -35,7 +35,10 @@ export default ()=>{
                             <div className="mainUserProfile__popap-input-check"></div>
                             <div className="mainUserProfile__popap-input-falPass"></div>
                         </div>
-                        <button tabIndex={3} disabled type="submit" className="mainUserProfile__popap-button blue disabled">Войти</button>
+                        <button tabIndex={3} disabled type="submit" className="mainUserProfile__popap-button blue disabled">
+                            Войти
+                            <div className="mainUserProfile__popap-input-falPass" style={{textAlign: 'center'}}>Неверный логин или пароль</div>
+                        </button>
                         <div className="mainUserProfile__popap-separator"><div>или</div></div>
                         <div className="mainUserProfile__popap-button black">
                             <picture id="icon" data-icon-name='logo-apple' className="loading-img">
