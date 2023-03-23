@@ -1684,6 +1684,7 @@ picture {
   align-items: center;
   justify-content: center;
   gap: 10px;
+  position: relative;
   text-align: center;
 }
 .mainUserProfile__popap-button.disabled {
@@ -1708,6 +1709,14 @@ picture {
 .mainUserProfile__popap-button.gray {
   background-color: #e7e5e5;
   color: #000;
+}
+.mainUserProfile__popap-button.passNotValid {
+  border-radius: 10px 10px 0 0;
+}
+.mainUserProfile__popap-button.passNotValid > .mainUserProfile__popap-input-falPass {
+  opacity: 1;
+  z-index: 10;
+  transform: translate(0, 100%);
 }
 .mainUserProfile__popap-separator {
   position: relative;
