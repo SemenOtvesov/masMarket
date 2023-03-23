@@ -1,11 +1,21 @@
 import React from "react";
 import ElementAdvertisement from "@elementUI/ElementAdvertisement.jsx"
 
+const imgPathJpg = './img/icon/png/'
+const imgPathWebp = './img/icon/webp/'
+
 export default (props)=>{
+    let scrollWidth = Math.max(
+        document.body.scrollWidth, document.documentElement.scrollWidth,
+        document.body.offsetWidth, document.documentElement.offsetWidth,
+        document.body.clientWidth, document.documentElement.clientWidth
+    );
+
     return(
         <>
-            <ElementAdvertisement type='line' sorce={{url:"./img/Advertisement/midleAdvertisement-sale-image.jpg", 
-            className:'bold', altText:''}}/>
+            {scrollWidth > 768 ? 
+            <ElementAdvertisement type='line' sorce={{name:"midleAdvertisement-sale-image", 
+            className:'bold', altText:''}}/>:''}
 
             <div className="mainUserProfile__element">
                 <div className="mainUserProfile__element-title">Мои данные</div>
@@ -13,14 +23,22 @@ export default (props)=>{
                     <div className="mainUserProfile__element-item bchGray">
                         <div className="mainUserProfile__element-item-data-title ">Оформить подписку</div>
                         <div className="mainUserProfile__element-item-data-main">
-                            <img src="./img/icon/user-prem.png" alt="" />
+                            <picture id="icon" data-icon-name='user-prem' className="loading-img">
+                                <div id="equalSidesRev" className="img-mask"></div>
+                                <source srcSet=''/>
+                                <img src='' alt="" />
+                            </picture>
                             <span>Premium</span>
                         </div>
                     </div>
                     <div className="mainUserProfile__element-item bchGray">
                     <div className="mainUserProfile__element-item-data-title">Балы и бонусы</div>
                         <div className="mainUserProfile__element-item-data-main">
-                            <img src="./img/icon/user-point.png" alt="" />
+                            <picture id="icon" data-icon-name='user-point' className="loading-img">
+                                <div id="equalSidesRev" className="img-mask"></div>
+                                <source srcSet=''/>
+                                <img src='' alt="" />
+                            </picture>
                             <span>0</span>
                         </div>
                     </div>

@@ -21,8 +21,12 @@ export default (props)=>{
 }
 function contentAdvesment(sorce){
     if(sorce.type === ('img'||'jpeg'||'png'||'webp')){
-        return <img src={sorce.url} alt="" />
+        return  <picture id="adv" data-adv-name={sorce.name} className="loading-img">
+                    <div id="equalSidesRev" className="img-mask"></div>
+                    <source srcSet=''/>
+                    <img src='' alt="" />
+                </picture>
     }else{
-        return <video src={sorce.url}></video>
+        return <video src=''></video>
     }
 }

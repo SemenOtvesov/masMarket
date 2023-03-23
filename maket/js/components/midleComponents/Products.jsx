@@ -1,6 +1,7 @@
 import React from "react";
 import Product from "../elementUI/Product.jsx";
 
-export default (props)=>{
-    return props.idList.map(elem=><Product key={props.prodList[elem].url} idProd={elem} prodList={props.prodList}/>)
+let i = 0
+export default ({idList, favoritCheck})=>{
+    return idList.map(elem=><Product key={'product'+ elem + i++} idProd={elem} favoritCheck={favoritCheck}/>)
 }

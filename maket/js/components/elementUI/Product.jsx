@@ -1,26 +1,31 @@
 import React from "react";
 
-
-
-export default ({idProd, prodList})=>{
-    const element = prodList[idProd]
+export default ({idProd, favoritCheck})=>{
     return(
-        <div className="product bchGray">
+        <div id="product" data-product-id={idProd} className="product bchGray loading">
             <div id="equalSides" className="product__top">
-                <picture>
-                    <source srcSet={element.url}/>
-                    <img src={element.altUrl} alt={element.altText} />
+                <picture id="prod" data-prod-name={idProd} className="loading-img">
+                    <div id="equalSidesRev" className="img-mask"></div>
+                    <source srcSet=''/>
+                    <img src='' alt="" />
                 </picture>
-                <img src={element.url} alt="" />
-                <div className="img-mask"></div>
-                <div className="product__sale">-{Math.floor((element.oldPrise - element.newPrise)/element.oldPrise*100)}%</div>
+                <div id="productSalePersent" className="product__sale"></div>
+                {favoritCheck ? 
+                <div id="prodFavorBtn" className="product__favorite-button">
+                    <picture id="icon" data-icon-name='favourite' className="loading-img">
+                        <div id="equalSidesRev" className="img-mask"></div>
+                        <source srcSet=''/>
+                        <img src='' alt="" />
+                    </picture>
+                </div> 
+                : ''}
             </div>
             <div className="product__bottom">
                 <div className="product__prise">
-                    <div className="product__prise-new">{element.newPrise} ₽</div>
-                    <div className="product__prise-old">{element.oldPrise} ₽</div>
+                    <div id="productNewPrise" className="product__prise-new"></div>
+                    <div id="productOldPrise" className="product__prise-old"></div>
                 </div>
-                <div className="product__title">{element.title}</div>
+                <div id="productTitle" className="product__title"></div>
                 <button className="product__button">В корзину</button>
             </div>
         </div>
