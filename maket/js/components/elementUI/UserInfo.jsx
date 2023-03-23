@@ -3,10 +3,17 @@ import { NavLink } from "react-router-dom";
 
 export default (props)=>{
     return(
-        <>
+        'userInfo'
+    )
+}
+<>
         <div className="mainUserProfile__info-item">
                 <div id="equalSides" className="mainUserProfile__info-logo">
-                    <img src={props.user.urlLogo} alt="loading error logo image" />
+                    <picture id="prod" data-prod-name={idProd} className="loading-img">
+                        <div id="equalSidesRev" className="img-mask"></div>
+                        <source srcSet=''/>
+                        <img src='' alt="" />
+                    </picture>
                 </div>
                 <div className="mainUserProfile__info-name">{`${props.user.name} ${props.user.subname}`}</div>
                 <button className="mainUserProfile__info-button">Изменить профиль</button>
@@ -44,6 +51,4 @@ export default (props)=>{
                     <li className="mainUserProfile__info-list-item"><NavLink to={'/'}>Избранное</NavLink></li>
                     <li className="mainUserProfile__info-list-item"><NavLink to={'/'}>Настройки уведомлений</NavLink></li>
                 </ul>
-            </div></>
-    )
-}
+</div></>

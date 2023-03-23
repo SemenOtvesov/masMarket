@@ -36,12 +36,21 @@ function jsLoaders(){
     }]
     return loaders
 }
+function createHash(i){
+    return ()=>{
+        let newI = i; i++
+        return newI++
+    }
+}
 
+const numHash = createHash(0);
+let i = 0; 
 module.exports = {
     resolve: {
         alias: {
             '@js': path.resolve(__dirname, 'maket/js'),
             '@maket': path.resolve(__dirname, 'maket'),
+            '@docs': path.resolve(__dirname, 'docs'),
             '@core': path.resolve(__dirname, 'maket/js/core'),
             '@components': path.resolve(__dirname, 'maket/js/components'),
             '@elementUI': path.resolve(__dirname, 'maket/js/components/elementUI'),
@@ -52,8 +61,12 @@ module.exports = {
     },
     entry:'@js/script.js',
     output:{
-        filename: 'bundle.[chunkhash].js',
-        path: path.resolve(__dirname, 'docs')
+        asyncChunks: true,
+        filename: (pathData)=>{
+            let newI = i; i++
+            return `bundle.${pathData.hash}${newI}.js`},
+        path: path.resolve(__dirname, 'docs'),
+        publicPath: '/',
     },
     devtool: isDev ? 'source-map' : false,
     devServer:{
@@ -65,14 +78,14 @@ module.exports = {
         new HTMLPlug({template:'./maket/index.html',  minify: {collapseWhitespace: !isDev}}),
         new CleanWebpackPlugin(),
         new MiniCssEXtractPlugin(),
-        new CopyPlugin({
-            patterns: [
-                {from: path.resolve(__dirname, 'maket/img'), to: path.resolve(__dirname, 'public/img'), noErrorOnMissing: true}
-            ]
-        }),
         new webpack.ProvidePlugin({
             process: 'process/browser',
         }),
+        new CopyPlugin({
+            patterns: [
+                {from: path.resolve(__dirname, 'maket/img'), to: path.resolve(__dirname, 'docs/img'), noErrorOnMissing: true}
+            ]
+        })
     ],
     module:{
         rules:[
@@ -85,7 +98,11 @@ module.exports = {
                 test: /\.m?jsx?$/,
                 exclude: /node_modules/,
                 use: jsLoaders()
-            }
+            },
+            {
+                test: /\.(png|svg|jpg|jpeg|gif)$/i,
+                type: 'asset/resource',
+            },
             ]
     },
     optimization: optimization(),

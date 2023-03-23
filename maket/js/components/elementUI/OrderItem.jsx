@@ -2,8 +2,7 @@ import React from "react";
 
 const monthList = ['января',  'февраля', 'марта', 'апреля', 'мая', 'июня', 'июля', 'августа', 'сентября', 'октября', 'ноября', 'декабря']
 
-export default ({order, prodList})=>{
-    const element = prodList[+order.prodId]
+export default ({order})=>{
     const date = new Date(+order.date)
     const endDate = new Date(+order.endDate)
     return(
@@ -30,9 +29,10 @@ export default ({order, prodList})=>{
                     <button className="mainOrder__item-bottom-button">Oценить доставку</button>
                 </div>
                 <div className="mainOrder__item-bottom-right">
-                    <picture id="equalSides">
-                        <source srcSet={element.url}/>
-                        <img src={element.atlUrl} alt="" />
+                    <picture id="equalSides" data-prod-id="prod" data-prod-name={order.prodId} className="loading-img">
+                        <div id="equalSidesRev" className="img-mask"></div>
+                        <source srcSet=''/>
+                        <img src='' alt="" />
                     </picture>
                 </div>
             </div>

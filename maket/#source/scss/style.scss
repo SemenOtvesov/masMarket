@@ -1,6 +1,7 @@
-$grayColor: rgb(231, 229, 229);
+$grayColor: #e7e5e5;
 $darkGray: #a8a7a7;
 $mainBlue: #005bff;
+$liteBlue: #8ab2fc;
 $liteGreen: rgba(0,191,191,.16);
 $brightGreen: #10c44c;
 $pungentYellow:#fecc32;
@@ -13,5 +14,6 @@ $redLine: #F38181;
 @import "__mainUserProfile";
 @import "__mainOrder";
 @import "__mainBasketPage";
+@import "__mainProducts";
 
 @import "_footer";
