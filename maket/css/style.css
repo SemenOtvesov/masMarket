@@ -591,6 +591,9 @@ body.hidden {
   .catalog__right-list-row {
     flex: 0 0 100%;
   }
+  .header__catalog:hover {
+    background-color: #fff;
+  }
 }
 @media (max-width: 767.98px) {
   .catalog {
