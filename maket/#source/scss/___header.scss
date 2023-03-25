@@ -370,7 +370,7 @@ body.hidden{
 
     &-item{
       &-title{font-weight: 500; margin-bottom: 10px;}
-      &-list{display: flex; flex-direction: column; gap: 5px; position: relative;}
+      &-list{display: flex; flex-direction: column; gap: 5px; position: relative; &-item a{color: #000;}}
       &-subList{
         transition: 0.3s;
         overflow: hidden;

@@ -161,14 +161,6 @@ picture{position: relative; width: 100%; height: 100%; display: flex; overflow: 
     &__text{
       height: 50%;
       overflow: auto;
-      &::-webkit-scrollbar {
-        width: 0;
-      }
-      &:hover{
-        .Advertisement__text::-webkit-scrollbar {
-          width: auto;
-        }
-      }
     }
   }
   .mainContentFlexBox__title{font-size: 20px;}
@@ -216,10 +208,11 @@ picture{position: relative; width: 100%; height: 100%; display: flex; overflow: 
 
 @media (max-width: 1170px){
    .miniAdvertisement{flex: 0 0 45%;height: 100px;}
-   .midleAdvertisement{flex:  0 0 100%;height: 150px;}
+   .midleAdvertisement{height: 150px;}
 }
 @media (max-width:767.98px){
   .miniAdvertisement{flex: 0 0 100%;}
+  .midleAdvertisement{height: 130px; flex: 0 0 100%;}
 }
 
 .favorites__main{
@@ -259,6 +252,7 @@ picture{position: relative; width: 100%; height: 100%; display: flex; overflow: 
     display: flex; flex-direction: column;
     flex: 0 0 15%;
     margin-top: 20px;
+    cursor: pointer;
 
     &-imgError{
       position:absolute;

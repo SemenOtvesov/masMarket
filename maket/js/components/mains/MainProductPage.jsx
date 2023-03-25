@@ -250,14 +250,14 @@ export default ({userBasketProds, userFavoritesList, storage, equalSidesFn, fire
                             <div className="mainProduct__bottom-slider">
                                 <div className="mainProduct__bottom-slider-left">
 
-                                    <div id="sliderArrow" className="mainProduct__bottom-slider-arrow up">
+                                    <div id="sliderArrow" onClick={clickScrollBarArrow} className="mainProduct__bottom-slider-arrow up">
                                         <span id="equalSidesRev"></span>
                                     </div>
                                         <div id="prodScrollbar" onClick={clickScrollBar} className="mainProduct__bottom-slider-scrollbar loading-img">
                                             <div id={scrollWidth > 768 ? "equalSides": ''} style={scrollWidth > 768 ? {width: '80%'}: {width: '100%'}} className="img-mask"></div>
                                             {createSliderItem(urlListProd)}
                                         </div>
-                                    <div id="sliderArrow" className="mainProduct__bottom-slider-arrow down">
+                                    <div id="sliderArrow" onClick={clickScrollBarArrow} className="mainProduct__bottom-slider-arrow down">
                                         <span id="equalSidesRev"></span>
                                     </div>
 
@@ -357,16 +357,13 @@ export default ({userBasketProds, userFavoritesList, storage, equalSidesFn, fire
                                 <button id="btnProdAddBasket" data-prod-id-btn={params.idProduct} className="mainProduct__bottom-order-button">
                                     <div>Добавить в корзину </div>
                                     <div id="equalSidesRev" className="img-mask"></div>
+                                    <div className="mainProduct__bottom-order-button-userNdf">Пожалуйста войдите в аккаунт</div>
                                 </button>
                                 <div className="mainProduct__bottom-deliveryInfo">Доставка <span>12 февраля</span></div>
                             </div>
                         </div>
                     </div>
                     <div className="mainProduct__bottom-bottomBox">
-                        <div className="mainProduct__bottom-reviewsImgBox">
-                            {createReviews(urlListReviews)}
-                        </div>
-
                         <div className="mainProduct__bottom-seller-info">
                             <div className="mainProduct__bottom-seller-left">
                                 <div className="mainProduct__bottom-seller-logo">
@@ -408,67 +405,116 @@ export default ({userBasketProds, userFavoritesList, storage, equalSidesFn, fire
 }
 
 let mark = true
+let mainImgNum = 0
 function clickScrollBar(event){
     if(mark){
         const target = event.target.closest('.mainProduct__bottom-slider-item')
 
-        const nextTargetSource = target.nextElementSibling ? target.nextElementSibling.querySelector('source') : undefined
-        const nextTargetImg = target.nextElementSibling ? target.nextElementSibling.querySelector('img') : undefined
+        const nextTargetSource = target.nextElementSibling ? target.nextElementSibling.querySelector('source') : target.querySelector('source')
+        const nextTargetImg = target.nextElementSibling ? target.nextElementSibling.querySelector('img') : target.querySelector('img')
         const targetSource = target.querySelector('source')
         const targetImg = target.querySelector('img')
-        const lastTargetSource = target.previousElementSibling ? target.previousElementSibling.querySelector('source') : undefined
-        const lastTargetImg = target.previousElementSibling ? target.previousElementSibling.querySelector('img'): undefined
+        const lastTargetSource = target.previousElementSibling ? target.previousElementSibling.querySelector('source') : target.querySelector('source')
+        const lastTargetImg = target.previousElementSibling ? target.previousElementSibling.querySelector('img'): target.querySelector('img')
 
         const dataset = target.dataset;
         const mainImg = document.querySelector('.mainProduct__bottom-slider-right')
     
+        mainImgNum = targetImg.closest('[data-main-img-num]').dataset.mainImgNum
         if(dataset.hasOwnProperty('mainImgNum')){
-            mainImg.classList.remove('left')
-            mainImg.classList.remove('right')
-            setTimeout(()=>{
-                mainImg.classList.add('change');
-                [...mainImg.children].forEach(el=>{
-                    if(el.id === 'mainImg'){
-                        const mainItems = [...el.nextElementSibling.children]
-    
-                        mainItems[0].querySelector('picture').querySelector('source').setAttribute('srcSet', targetSource.getAttribute('srcSet'))
-                        mainItems[0].querySelector('picture').querySelector('img').setAttribute('src', targetImg.getAttribute('src'))
-                        mainItems[2].querySelector('picture').querySelector('source').setAttribute('srcSet', targetSource.getAttribute('srcSet'))
-                        mainItems[2].querySelector('picture').querySelector('img').setAttribute('src', targetImg.getAttribute('src'))
-
-                        if(+dataset['mainImgNum'] > +el.dataset.id){
-                            mainImg.classList.add('left')
-                        }else if(+dataset['mainImgNum'] < +el.dataset.id){
-                            mainImg.classList.add('right')
-                        }
-    
-                        setTimeout(()=>{
-                            if(lastTargetSource){
-                                mainItems[0].querySelector('picture').querySelector('source').setAttribute('srcSet', lastTargetSource.getAttribute('srcSet'))
-                                mainItems[0].querySelector('picture').querySelector('img').setAttribute('src', lastTargetImg.getAttribute('src'))
-                            }
-                            
-                            mainItems[1].querySelector('picture').querySelector('source').setAttribute('srcSet', targetSource.getAttribute('srcSet'))
-                            mainItems[1].querySelector('picture').querySelector('img').setAttribute('src', targetImg.getAttribute('src'))
-                            
-                            if(nextTargetSource){
-                                mainItems[2].querySelector('picture').querySelector('source').setAttribute('srcSet', nextTargetSource.getAttribute('srcSet'))
-                                mainItems[2].querySelector('picture').querySelector('img').setAttribute('src', nextTargetImg.getAttribute('src'))
-                            }
-                        },400)
-    
-                        el.querySelector('source').setAttribute('srcSet', targetSource.getAttribute('srcSet'))
-                        el.querySelector('img').setAttribute('srcSet', targetImg.getAttribute('src'))
-                        el.setAttribute('data-id', dataset['mainImgNum'])
-                    }
-                })
-            },400)
-    
-            setTimeout(()=>mainImg.classList.remove('change'),800)
+            slideFn(mainImg, nextTargetImg, nextTargetSource, targetImg, targetSource, lastTargetImg, lastTargetSource, dataset)
         }
     }
     mark = false
     setTimeout(()=>mark=true, 900)
+}
+
+function clickScrollBarArrow(event){
+    const targetArrow = event.target.closest('.mainProduct__bottom-slider-arrow')
+    const allProdImg = [...document.querySelectorAll('[data-main-img-num]')]
+
+    if(mark){
+        if(targetArrow.className.split(' ')[1] === 'up'){
+            mainImgNum > 0 ? mainImgNum-- : ''
+        }else if(targetArrow.className.split(' ')[1] === 'down'){
+            mainImgNum < allProdImg.length -1 ?  mainImgNum++ : ''
+        }
+
+        let nextTargetSource; let nextTargetImg;
+        if(+mainImgNum === 0){
+            nextTargetSource = allProdImg[mainImgNum].querySelector('source')
+            nextTargetImg = allProdImg[mainImgNum].querySelector('img')
+        }else{
+            nextTargetSource = allProdImg[mainImgNum -1].querySelector('source')
+            nextTargetImg = allProdImg[mainImgNum -1].querySelector('img')
+        }
+
+        const targetSource = allProdImg[mainImgNum].querySelector('source')
+        const targetImg = allProdImg[mainImgNum].querySelector('img')
+
+        let lastTargetSource; let lastTargetImg;
+
+        if(+mainImgNum === allProdImg.length -1){
+            lastTargetSource = allProdImg[mainImgNum].querySelector('source')
+            lastTargetImg = allProdImg[mainImgNum].querySelector('img')
+        }else{
+            lastTargetSource = allProdImg[mainImgNum + 1].querySelector('source')
+            lastTargetImg = allProdImg[mainImgNum + 1].querySelector('img')
+        }
+        const dataset = allProdImg[mainImgNum].dataset
+        const mainImg = document.querySelector('.mainProduct__bottom-slider-right')
+
+        slideFn(mainImg, nextTargetImg, nextTargetSource, targetImg, targetSource, lastTargetImg, lastTargetSource, dataset)
+    }
+}
+
+function slideFn(mainImg, nextTargetImg, nextTargetSource, targetImg, targetSource, lastTargetImg, lastTargetSource, dataset){
+    mainImg.classList.remove('left')
+    mainImg.classList.remove('right')
+    const allProdImg = [...document.querySelectorAll('[data-main-img-num]')]
+    allProdImg.forEach(el=>el.classList.remove('active'))
+
+    targetImg.closest('[data-main-img-num]').classList.add('active')
+    setTimeout(()=>{
+        mainImg.classList.add('change');
+        [...mainImg.children].forEach(el=>{
+            if(el.id === 'mainImg'){
+                const mainItems = [...document.querySelector('.mainProduct__bottom-slider-box').children]
+
+                mainItems[0].querySelector('picture').querySelector('source').setAttribute('srcSet', targetSource.getAttribute('srcSet'))
+                mainItems[0].querySelector('picture').querySelector('img').setAttribute('src', targetImg.getAttribute('src'))
+                mainItems[2].querySelector('picture').querySelector('source').setAttribute('srcSet', targetSource.getAttribute('srcSet'))
+                mainItems[2].querySelector('picture').querySelector('img').setAttribute('src', targetImg.getAttribute('src'))
+
+                if(+dataset['mainImgNum'] > +el.dataset.id){
+                    mainImg.classList.add('left')
+                }else if(+dataset['mainImgNum'] < +el.dataset.id){
+                    mainImg.classList.add('right')
+                }
+
+                setTimeout(()=>{
+                    if(lastTargetSource){
+                        mainItems[0].querySelector('picture').querySelector('source').setAttribute('srcSet', lastTargetSource.getAttribute('srcSet'))
+                        mainItems[0].querySelector('picture').querySelector('img').setAttribute('src', lastTargetImg.getAttribute('src'))
+                    }
+                    
+                    mainItems[1].querySelector('picture').querySelector('source').setAttribute('srcSet', targetSource.getAttribute('srcSet'))
+                    mainItems[1].querySelector('picture').querySelector('img').setAttribute('src', targetImg.getAttribute('src'))
+                    
+                    if(nextTargetSource){
+                        mainItems[2].querySelector('picture').querySelector('source').setAttribute('srcSet', nextTargetSource.getAttribute('srcSet'))
+                        mainItems[2].querySelector('picture').querySelector('img').setAttribute('src', nextTargetImg.getAttribute('src'))
+                    }
+                },400)
+
+                el.querySelector('source').setAttribute('srcSet', targetSource.getAttribute('srcSet'))
+                el.querySelector('img').setAttribute('srcSet', targetImg.getAttribute('src'))
+                el.setAttribute('data-id', dataset['mainImgNum'])
+            }
+        })
+    },400)
+
+    setTimeout(()=>mainImg.classList.remove('change'),800)
 }
 
 function createReviews(urlListReviews){
@@ -526,7 +572,8 @@ function createSliderItem(itemLinkList = []){
         document.getElementById('mainImg').querySelector('img').setAttribute('src', itemLinkList[0].png)
     }
     return itemLinkList.map(el=>{
-        return <div id="equalSides" key={el.webp} data-main-img-num={imgiteratorSelectsProd++} className="mainProduct__bottom-slider-item">
+        return <div id="equalSides" key={el.webp} data-main-img-num={imgiteratorSelectsProd++}
+        className={imgiteratorSelectsProd === 1 ? "mainProduct__bottom-slider-item active" : "mainProduct__bottom-slider-item"}>
                     <picture>
                         <div id="equalSidesRev" className="img-mask"></div>
                         <source srcSet={el.webp}/>
