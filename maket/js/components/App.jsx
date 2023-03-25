@@ -16,6 +16,7 @@ import UserProfile from '@midleComponents/UserProfile.jsx';
 import Order from '@midleComponents/Order.jsx';
 
 import Layout from './Layout.jsx';
+import { event } from 'jquery';
 
 const firebaseConfig = {
     apiKey: 'AIzaSyAo1IT7ztPjKjWDhcWed70sYqg_4B3UHFQ',
@@ -53,26 +54,25 @@ export default ()=>{
         window.addEventListener('input', inputFn)
         const submitFn = windowListenerSubmit.bind(event, setRegInfo)
         window.addEventListener('submit', submitFn)
+        const resizeFn = windowListenerResize
+        window.addEventListener('resize', resizeFn)
 
         return ()=>{
             window.removeEventListener('click', clickFn)
             window.removeEventListener('input', inputFn)
             window.removeEventListener('submit', submitFn)
+            window.removeEventListener('resize', resizeFn)
         }
     }, [location.pathname])
 
     useEffect(()=>{
-        let scrollWidth = Math.max(
+        const scrollWidth = Math.max(
             document.body.scrollWidth, document.documentElement.scrollWidth,
             document.body.offsetWidth, document.documentElement.offsetWidth,
             document.body.clientWidth, document.documentElement.clientWidth
-        );
+        )
         equalSidesFn(scrollWidth)
         appLoaderImg(storage)
-
-        if(scrollWidth < 769){
-            mobileFooterMargin(scrollWidth)
-        }
 
         const selects = document.querySelectorAll('#select')
         if(selects){return buttonSelected(selects)}
@@ -164,7 +164,7 @@ export default ()=>{
 
     return(
         <Routes>
-            <Route  path='/' element={<Layout firebaseConfig={firebaseConfig}/>}>
+            <Route  path='/' element={<Layout firebaseConfig={firebaseConfig} quantityEl={quantityEl}/>}>
                 <Route index element={<MainStartPage quantityEl={quantityEl} firebaseConfig={firebaseConfig}/>}/>
                 <Route path='userProfile' element={<MainUserOrderPage user={user} rigthContent={UserProfile} quantityEl={quantityEl}/>}/>
                 <Route path='order' element={<MainUserOrderPage user={user} rigthContent={Order} quantityEl={quantityEl} />}/>
@@ -176,6 +176,15 @@ export default ()=>{
             </Route>
         </Routes>
     )
+}
+
+function windowListenerResize(){
+    const scrollWidth = Math.max(
+        document.body.scrollWidth, document.documentElement.scrollWidth,
+        document.body.offsetWidth, document.documentElement.offsetWidth,
+        document.body.clientWidth, document.documentElement.clientWidth
+    )
+    equalSidesFn(scrollWidth)
 }
 
 async function windowListenerClick(navigate, setUser, signOut, auth, storage, event){
@@ -620,6 +629,11 @@ function equalSidesFn(scrollWidth){
             }
         }
         el.style.width = el.offsetHeight + 'px'
+
+        if(((el.closest('#product')||(el.closest('#adv'))||(el.closest('#icon'))||(el.closest('#brandIcon')))) 
+        && (el.parentElement.className !== 'loading-img')){
+            el.style.width = '100%'
+        }
     })
 }
 
@@ -628,6 +642,7 @@ function appLoaderImg(storage){
     const advs = document.querySelectorAll('#adv')
     const icons = document.querySelectorAll('#icon')
     const brandIcon = document.querySelectorAll('#brandIcon')
+
     prodsEach()
     advsEach()
     iconsEach()
@@ -677,10 +692,12 @@ function appLoaderImg(storage){
                         .then((url) => {
                             el.children[2].setAttribute('src', url)
                             el.classList.remove('loading-img')
+                            el.firstElementChild.style.width = '100%'
                         })
                         .catch((error) => {
                             el.classList.add('errorDownload')
                             el.classList.remove('loading-img')
+                            el.firstElementChild.style.width = '100%'
                         });
                     })
                 .catch((error) => {
@@ -710,10 +727,12 @@ function appLoaderImg(storage){
                     .then((url) => {
                         el.children[2].setAttribute('src', url)
                         el.classList.remove('loading-img')
+                        el.firstElementChild.style.width = '100%'
                     })
                     .catch((error) => {
                         el.classList.add('errorDownload')
                         el.classList.remove('loading-img')
+                        el.firstElementChild.style.width = '100%'
                     });
                 })
                 .catch((error) => {
@@ -737,11 +756,13 @@ function appLoaderImg(storage){
                     .then((url) => {
                         el.children[2].setAttribute('src', url)
                         el.classList.remove('loading-img')
+                        el.firstElementChild.style.width = '100%'
                     })
                     .catch((error) => {
                         if(el.dataset.iconName === 'input-seach'){el.style.backgroundColor = 'rgb(231, 229, 229)'}
                         el.classList.add('errorDownload')
                         el.classList.remove('loading-img')
+                        el.firstElementChild.style.width = '100%'
                     });
                 })
                 .catch((error) => {
@@ -766,11 +787,13 @@ function appLoaderImg(storage){
                     .then((url) => {
                         el.children[2].setAttribute('src', url)
                         el.classList.remove('loading-img')
+                        el.firstElementChild.style.width = '100%'
                     })
                     .catch((error) => {
                         if(el.dataset.iconName === 'input-seach'){el.style.backgroundColor = 'rgb(231, 229, 229)'}
                         el.classList.add('errorDownload')
                         el.classList.remove('loading-img')
+                        el.firstElementChild.style.width = '100%'
                     });
                 })
                 .catch((error) => {

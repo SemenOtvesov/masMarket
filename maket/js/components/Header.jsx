@@ -2,9 +2,10 @@ import React, { useEffect, useState } from "react"
 import { NavLink } from "react-router-dom"
 
 
-export default ({firebaseConfig})=>{
+export default ({firebaseConfig, quantityEl})=>{
     const [catalogActiveName, setCatalogActiveName] = useState('Электроника')
     const [categoriesList, setCategoriesList] = useState()
+    const [Charpeters, setCharpeters] = useState()
 
     let scrollWidth = Math.max(
         document.body.scrollWidth, document.documentElement.scrollWidth,
@@ -30,8 +31,14 @@ export default ({firebaseConfig})=>{
         createSubCategory(categoriesList, catalogActiveName, scrollWidth)
     }, [catalogActiveName])
     useEffect(()=>{
+        scrollWidth = Math.max(
+            document.body.scrollWidth, document.documentElement.scrollWidth,
+            document.body.offsetWidth, document.documentElement.offsetWidth,
+            document.body.clientWidth, document.documentElement.clientWidth
+        );
         fetch(`${firebaseConfig.databaseURL}categoriesList.json`).then(rez=>rez.json()).then(rez=>{
             setCategoriesList(rez)
+            createChapters(rez, setCharpeters, quantityEl)
         })
     }, [])
     
@@ -44,20 +51,28 @@ export default ({firebaseConfig})=>{
                 </div>
 
                 <div className="header__box-bottom">
-                    <button className="header__box-bottom-item">1 Chapter</button>
-                    <button className="header__box-bottom-item">2 Chapter</button>
-                    <button className="header__box-bottom-item">3 Chapter</button>
-                    <button className="header__box-bottom-item">4 Chapter</button>
-                    <button className="header__box-bottom-item">5 Chapter</button>
-                    <button className="header__box-bottom-item">6 Chapter</button>
-                    <button className="header__box-bottom-item">7 Chapter</button>
-                    <button className="header__box-bottom-item">8 Chapter</button>
-                    <button className="header__box-bottom-item">9 Chapter</button>
-                    <button className="header__box-bottom-item">10 Chapter</button>
+                    {Charpeters}
                 </div>
             </div>
         </div>
     )
+}
+
+function createChapters(chapterList, setCharpeters, quantityEl){
+    if(chapterList){
+        const limitOneCharpeter = Math.round(quantityEl(10, 5, 3) / chapterList.length)
+        const finalArr = []
+        chapterList.forEach(el=>{
+            const iteratorCharpetersList = Math.round(el.subCategories[0].subSubCategories.length / limitOneCharpeter)
+            for (let i = 0; i < el.subCategories[0].subSubCategories.length; i += iteratorCharpetersList) {
+                const charpeter = el.subCategories[0].subSubCategories[i]
+                    finalArr.push(<button key={`./category/${charpeter.pathSubSubCategories}`} className="header__box-bottom-item">
+                        <NavLink to={`./category/${charpeter.pathSubSubCategories}`}>{charpeter.titleSubSubCategories}</NavLink>
+                    </button>)
+            }
+        })
+        setCharpeters(finalArr)
+    }
 }
 
 function sequenceHeaderLeft(scrollWidth, catalogCategories, catalogActiveName){
