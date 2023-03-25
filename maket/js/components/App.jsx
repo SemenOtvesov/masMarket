@@ -10,11 +10,10 @@ import MainUserOrderPage from '@mains/MainUser&OrderPage.jsx';
 import MainFavoritesPage from '@mains/MainFavoritesPage.jsx';
 import MainBasketPage from '@mains/MainBasketPage.jsx';
 import MainProductPage from '@mains/MainProductPage.jsx';
+import MainCategory from './mains/MainCategory.jsx';
 
 import UserProfile from '@midleComponents/UserProfile.jsx';
 import Order from '@midleComponents/Order.jsx';
-
-import catalogCategories from './catalogCategories.js';
 
 import Layout from './Layout.jsx';
 
@@ -47,6 +46,7 @@ export default ()=>{
             }
         })
 
+
         const clickFn = windowListenerClick.bind(event, navigate, setUser, signOut, auth, storage)
         window.addEventListener('click', clickFn)
         const inputFn = windowListenerInput.bind(event, setCheckRequest)
@@ -68,7 +68,11 @@ export default ()=>{
             document.body.clientWidth, document.documentElement.clientWidth
         );
         equalSidesFn(scrollWidth)
-        prodContent(storage)
+        appLoaderImg(storage)
+
+        if(scrollWidth < 769){
+            mobileFooterMargin(scrollWidth)
+        }
 
         const selects = document.querySelectorAll('#select')
         if(selects){return buttonSelected(selects)}
@@ -160,7 +164,7 @@ export default ()=>{
 
     return(
         <Routes>
-            <Route  path='/' element={<Layout catalogCategories={catalogCategories} firebaseConfig={firebaseConfig}/>}>
+            <Route  path='/' element={<Layout firebaseConfig={firebaseConfig}/>}>
                 <Route index element={<MainStartPage quantityEl={quantityEl} firebaseConfig={firebaseConfig}/>}/>
                 <Route path='userProfile' element={<MainUserOrderPage user={user} rigthContent={UserProfile} quantityEl={quantityEl}/>}/>
                 <Route path='order' element={<MainUserOrderPage user={user} rigthContent={Order} quantityEl={quantityEl} />}/>
@@ -168,6 +172,7 @@ export default ()=>{
                 <Route path='basket' element={<MainBasketPage user={user} userBasketProds={userBasketProds} quantityEl={quantityEl}/>}/>
                 <Route path='product/:idProduct' element={<MainProductPage userBasketProds={userBasketProds} 
                 userFavoritesList={userFavoritesList} storage={storage} equalSidesFn={equalSidesFn} firebaseConfig={firebaseConfig}/>}/>
+                <Route path='category/:nameCategory' element={<MainCategory quantityEl={quantityEl} firebaseConfig={firebaseConfig}/>}></Route>
             </Route>
         </Routes>
     )
@@ -312,46 +317,51 @@ async function windowListenerClick(navigate, setUser, signOut, auth, storage, ev
         const prodSelectType = document.getElementById('prodSelectType')
         const prodSelectValue = prodSelectType.dataset.prodSelectValue
 
-        if(button.className.split(' ')[1] !== 'blocked'){
-            if(prodSelectValue){
-                button.classList.add('loading-img')
-                equalSidesFn()
-                fetch(`${firebaseConfig.databaseURL}UserList/${userUidVar}/basketProds.json`, {
-                    method: 'POST',
-                    headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({idProd:button.dataset.prodIdBtn, select:prodSelectValue})
-                }).then(rez=>{
-                    userBasketProds.push({idProd: button.dataset.prodIdBtn, select:prodSelectValue})
-                    button.children[0].innerHTML = 'В корзине'
-                    button.classList.add('blocked')
-                    button.classList.remove('loading-img')
-                })
+        if(userUidVar){
+            if(button.className.split(' ')[1] !== 'blocked'){
+                if(prodSelectValue){
+                    button.classList.add('loading-img')
+                    equalSidesFn()
+                    fetch(`${firebaseConfig.databaseURL}UserList/${userUidVar}/basketProds.json`, {
+                        method: 'POST',
+                        headers: {'Content-Type': 'application/json'},
+                        body: JSON.stringify({idProd:button.dataset.prodIdBtn, select:prodSelectValue})
+                    }).then(rez=>{
+                        userBasketProds.push({idProd: button.dataset.prodIdBtn, select:prodSelectValue})
+                        button.children[0].innerHTML = 'В корзине'
+                        button.classList.add('blocked')
+                        button.classList.remove('loading-img')
+                    })
+                }
+            }else{
+                if(prodSelectValue){
+                    const selectAct = document.querySelector('[data-prod-select].active')
+                    button.classList.add('loading-img')
+                    equalSidesFn()
+                    
+                    let deletSelectId
+                    await fetch(`${firebaseConfig.databaseURL}UserList/${userUidVar}/basketProds.json?orderBy="select"&equalTo="${selectAct.dataset.prodSelect}"`)
+                        .then(rez=>rez.json()).then(rez=>{
+                            deletSelectId = Object.keys(rez)[0]
+                        })
+                        if(deletSelectId){
+                            await fetch(`${firebaseConfig.databaseURL}UserList/${userUidVar}/basketProds/${deletSelectId}.json`,{
+                                method: 'DELETE'
+                            }).then(rez=>{
+                                userBasketProds.forEach(el=>{
+                                    if((el.idProd === button.dataset.prodIdBtn) && (el.select === selectAct.dataset.prodSelect)){
+                                        userBasketProds.splice(userBasketProds.indexOf(el), 1)
+                                    }
+                                })
+                                button.classList.remove('loading-img','blocked')
+                                button.children[0].innerHTML = 'Добавить в корзину'
+                            })
+                        }
+                }
             }
         }else{
-            if(prodSelectValue){
-                const selectAct = document.querySelector('[data-prod-select].active')
-                button.classList.add('loading-img')
-                equalSidesFn()
-                
-                let deletSelectId
-                await fetch(`${firebaseConfig.databaseURL}UserList/${userUidVar}/basketProds.json?orderBy="select"&equalTo="${selectAct.dataset.prodSelect}"`)
-                    .then(rez=>rez.json()).then(rez=>{
-                        deletSelectId = Object.keys(rez)[0]
-                    })
-                    if(deletSelectId){
-                        await fetch(`${firebaseConfig.databaseURL}UserList/${userUidVar}/basketProds/${deletSelectId}.json`,{
-                            method: 'DELETE'
-                        }).then(rez=>{
-                            userBasketProds.forEach(el=>{
-                                if((el.idProd === button.dataset.prodIdBtn) && (el.select === selectAct.dataset.prodSelect)){
-                                    userBasketProds.splice(userBasketProds.indexOf(el), 1)
-                                }
-                            })
-                            button.classList.remove('loading-img','blocked')
-                            button.children[0].innerHTML = 'Добавить в корзину'
-                        })
-                    }
-            }
+            button.classList.add('userNdf')
+            setTimeout(()=>{button.classList.remove('userNdf')}, 2000)
         }
     }
 
@@ -415,7 +425,7 @@ async function windowListenerClick(navigate, setUser, signOut, auth, storage, ev
                             userFavoritesList.splice(userFavoritesList.indexOf(product.dataset.productId), 1)
                             navigate('/favorites')
                             equalSidesFn()
-                            prodContent(storage)
+                            appLoaderImg(storage)
                         })
                     }
     }else{
@@ -613,14 +623,16 @@ function equalSidesFn(scrollWidth){
     })
 }
 
-function prodContent(storage){
+function appLoaderImg(storage){
     const products = document.querySelectorAll('#prod,[data-prod-id]')
     const advs = document.querySelectorAll('#adv')
     const icons = document.querySelectorAll('#icon')
     const brandIcon = document.querySelectorAll('#brandIcon')
     prodsEach()
-        async function prodsEach(){
-        let i = 0
+    advsEach()
+    iconsEach()
+    brandIconEach()
+    async function prodsEach(){
         if(products){
             for(const el of products){
                 const product = el.closest('#product') ? el.closest('#product') : undefined
@@ -684,6 +696,8 @@ function prodContent(storage){
 
             addContentBasketRight(oldPrise, newPrise, prodsWeight)
         }
+    }
+    async function advsEach(){
         if(advs){
             for(const el of advs){
                 await getDownloadURL(ref(storage, `image/advertisement/webp/${el.dataset.advName}.webp`))
@@ -709,6 +723,8 @@ function prodContent(storage){
                 });
             }
         }
+    }
+    async function iconsEach(){
         if(icons){
             for(const el of icons){
                 await getDownloadURL(ref(storage, `image/icon/all/webp/${el.dataset.iconName}.webp`))
@@ -736,6 +752,8 @@ function prodContent(storage){
                 });
             }
         }
+    }
+    async function brandIconEach(){
         if(brandIcon){
             for(const el of brandIcon){
                 await getDownloadURL(ref(storage, `image/products/brand/webp/${el.dataset.brandIconName}.webp`))
@@ -763,7 +781,6 @@ function prodContent(storage){
                 });
             }
         }
-        
     }
 }
 
@@ -867,4 +884,12 @@ function pngTransformWebp(pngImg, userUid, storage, setCheckUploadLogoUser){
             uploadBytes(ref(storage, `image/users/logo/webp/${userUid}.webp`), myImage).then(url=>setCheckUploadLogoUser(Math.random()))
         }, 'image/webp');
     };
+}
+
+function mobileFooterMargin(scrollWidth){
+    const footer = document.querySelector('.footer')
+    const headerItemBtnBox = document.getElementById('headerItemBtnBox')
+    if(scrollWidth < 426){
+        footer.style.marginBottom = headerItemBtnBox.offsetHeight + 'px'
+    }
 }

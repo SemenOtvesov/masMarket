@@ -136,15 +136,15 @@
       &.up{
         margin-bottom: 10px;
         & span{
-          &::before{transform: translate(-35%) rotate(45deg);}
-          &::after{transform: translate(35%) rotate(-45deg);}
+          &::before{transform: translate(-35%) rotate(-45deg);}
+          &::after{transform: translate(35%) rotate(45deg);}
         }
       }
       &.down{
         margin-top: 10px;
         & span{
-          &::before{transform: translate(-35%) rotate(-45deg);}
-          &::after{transform: translate(35%) rotate(45deg);}
+          &::before{transform: translate(-35%) rotate(45deg);}
+          &::after{transform: translate(35%) rotate(-45deg);}
       }
     }
     }
@@ -382,6 +382,24 @@
         & > .img-mask{
           background-color: $brightGreen;
         }
+      }
+    }
+    &-userNdf{
+      transition: 0.3s;
+      position:absolute;
+      bottom: 0; left: 0;
+      width: 100%;
+      padding: 5px; 
+      background-color: $redLine;
+      border-radius: 0 0 10px 10px;
+      pointer-events: none;
+      opacity: 0;
+    }
+    &.userNdf{
+      border-radius: 10px 10px 0 0;
+      & > .mainProduct__bottom-order-button-userNdf{
+        opacity: 1;
+        transform: translate(0, 100%);
       }
     }
   }
@@ -626,6 +644,20 @@
       &-order{gap: 10px; &-button{font-size: 12px;}}
       &-installment{font-size: 12px;}
       &-deliveryInfo{font-size: 12px;}
+      &-slider-arrow{
+        &.up{
+          & span{
+            &::before{transform: translate(-35%) rotate(45deg);}
+            &::after{transform: translate(35%) rotate(-45deg);}
+          }
+        }
+        &.down{
+          & span{
+            &::before{transform: translate(-35%) rotate(-45deg);}
+            &::after{transform: translate(35%) rotate(45deg);}
+          }
+        }
+      }
     }
   }
 }

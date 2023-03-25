@@ -3,10 +3,10 @@ import { Outlet } from "react-router-dom";
 import Header from './Header.jsx'
 import Footer from "./Footer.jsx";
 
-export default ({catalogCategories, firebaseConfig})=>{
+export default ({firebaseConfig})=>{
     return(
         <>
-            <Header catalogCategories={catalogCategories} firebaseConfig={firebaseConfig}/>
+            <Header firebaseConfig={firebaseConfig}/>
             <div className="body-blackBlur"></div>
             <Outlet/>
             <Footer />

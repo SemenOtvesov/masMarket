@@ -2,8 +2,9 @@ import React, { useEffect, useState } from "react"
 import { NavLink } from "react-router-dom"
 
 
-export default ({catalogCategories, firebaseConfig})=>{
+export default ({firebaseConfig})=>{
     const [catalogActiveName, setCatalogActiveName] = useState('Электроника')
+    const [categoriesList, setCategoriesList] = useState()
 
     let scrollWidth = Math.max(
         document.body.scrollWidth, document.documentElement.scrollWidth,
@@ -17,7 +18,7 @@ export default ({catalogCategories, firebaseConfig})=>{
             document.body.clientWidth, document.documentElement.clientWidth
         );
 
-        return eventClick(catalogCategories, setCatalogActiveName)
+        return eventClick(setCatalogActiveName)
     })
     useEffect(()=>{
         scrollWidth = Math.max(
@@ -26,14 +27,19 @@ export default ({catalogCategories, firebaseConfig})=>{
             document.body.clientWidth, document.documentElement.clientWidth
         );
 
-        createSubCategory(catalogCategories, catalogActiveName, scrollWidth)
+        createSubCategory(categoriesList, catalogActiveName, scrollWidth)
     }, [catalogActiveName])
+    useEffect(()=>{
+        fetch(`${firebaseConfig.databaseURL}categoriesList.json`).then(rez=>rez.json()).then(rez=>{
+            setCategoriesList(rez)
+        })
+    }, [])
     
     return(
         <div className="header">
             <div className="header__container">
                 <div className="header__box-top">
-                    {sequenceHeaderLeft(scrollWidth, catalogCategories, catalogActiveName)}
+                    {sequenceHeaderLeft(scrollWidth, categoriesList, catalogActiveName)}
                     {sequenceHeaderRight(scrollWidth)}
                 </div>
 
@@ -210,67 +216,83 @@ function sequenceHeaderRight(scrollWidth){
 function createCategoryTitle(catalogCategories){
     let i = 0;
     let iItem = 0
-    return catalogCategories.map(el=>{
-        i++
-        return  <div data-name={`${el.name}`}  key={el.name + i} className="catalog__left-item">
-                    <div className={iItem++ === 0 ? "catalog__left-item-box active": "catalog__left-item-box"}>
-                        <div className="catalog__left-item-imgBox">
-                            <picture id="icon" data-icon-name={el.nameImg} className="loading-img">
-                                <div id="equalSidesRev" className="img-mask"></div>
-                                <source srcSet=''/>
-                                <img src='' alt="" />
-                            </picture>
+    if(catalogCategories){
+        return catalogCategories.map(el=>{
+            i++
+            return  <div data-name={`${el.name}`}  key={el.name + i} className="catalog__left-item">
+                        <div className={iItem++ === 0 ? "catalog__left-item-box active": "catalog__left-item-box"}>
+                            <div className="catalog__left-item-imgBox">
+                                <picture id="icon" data-icon-name={el.nameImg} className="loading-img">
+                                    <div id="equalSidesRev" className="img-mask"></div>
+                                    <source srcSet=''/>
+                                    <img src='' alt="" />
+                                </picture>
+                            </div>
+                            <div className="catalog__left-item-text">{el.name}</div>
                         </div>
-                        <div className="catalog__left-item-text">{el.name}</div>
+                        <span></span>
                     </div>
-                    <span></span>
-                </div>
-        })
+            })
+    }
 }
 
 function createSubCategory(catalogCategories, nameCategory, scrollWidth){
-    const element = nameCategory ? catalogCategories.find(el=>el.name === nameCategory) : catalogCategories[0];
-    let i = 0
-    return  <>
-                <div className="catalog__right-title">{element.name}</div>
-                <ul className="catalog__right-list">
-                    {creteContCatalogListRight(element, scrollWidth).map(element=>{
-                        i++
-                        return <div key={'row' + i} className="catalog__right-list-row">
-                            {element.map(el=>{
-                                i++
-                                return <li key={el.subName + i} className="catalog__right-item">
-                                            <div className="catalog__right-item-title">{el.subName}</div>
-                                            <ul className="catalog__right-item-list">
-                                                {el.subSubCategories.length < 7 ? 
-                                                el.subSubCategories.map(elem=>{
-                                                    i++
-                                                    return <li key={`${elem + 'kdj' + i}`} className="catalog__right-item-list-item">{elem}</li>
-                                                }):
-                                                <>
-                                                    {el.subSubCategories.map(elem=>{
-                                                        if(el.subSubCategories.indexOf(elem) <= 5){
-                                                            i++
-                                                            return <li key={`${elem +'pm' + i}`} className="catalog__right-item-list-item">{elem}</li>
-                                                        }
-                                                    })}
-                                                    <ul className="catalog__right-item-subList">
-                                                    {el.subSubCategories.map(elem=>{
+    if(catalogCategories){
+        const element = nameCategory ? catalogCategories.find(el=>el.name === nameCategory) : catalogCategories[0];
+        let i = 0
+        return  <>
+                    <div className="catalog__right-title">{element.name}</div>
+                    <ul className="catalog__right-list">
+                        {creteContCatalogListRight(element, scrollWidth).map(element=>{
+                            i++
+                            return <div key={'row' + i} className="catalog__right-list-row">
+                                {element.map(el=>{
+                                    i++
+                                    return <li key={el.subName + i} className="catalog__right-item">
+                                                <div className="catalog__right-item-title">{el.subName}</div>
+                                                <ul className="catalog__right-item-list">
+                                                    {el.subSubCategories.length < 7 ? 
+                                                    el.subSubCategories.map(elem=>{
                                                         i++
-                                                        if(el.subSubCategories.indexOf(elem) > 5){
-                                                            return <li key={`${elem + 'mh' + i}`} className="catalog__right-item-list-item">{elem}</li>
-                                                        }
-                                                    })}
-                                                    </ul>
-                                                    <li key={'sdsd'+i} className="catalog__right-item-arrow"><div>Ещё</div> <span></span></li>
-                                                </>}
-                                            </ul>
-                                        </li>
-                            })}
-                        </div>
-                    })}
-                </ul>
-            </>
+                                                        return <li id="catalogLink" key={`${elem + i}`} className="catalog__right-item-list-item">
+                                                                    <NavLink to={`/category/${elem.pathSubSubCategories}`}>
+                                                                        {elem.titleSubSubCategories}
+                                                                    </NavLink>
+                                                                </li>
+                                                    }):
+                                                    <>
+                                                        {el.subSubCategories.map(elem=>{
+                                                            if(el.subSubCategories.indexOf(elem) <= 5){
+                                                                i++
+                                                                return <li id="catalogLink" key={`${elem + i}`} className="catalog__right-item-list-item">
+                                                                            <NavLink to={`/category/${elem.pathSubSubCategories}`}>
+                                                                                {elem.titleSubSubCategories}
+                                                                            </NavLink>
+                                                                        </li>
+                                                            }
+                                                        })}
+                                                        <ul className="catalog__right-item-subList">
+                                                        {el.subSubCategories.map(elem=>{
+                                                            i++
+                                                            if(el.subSubCategories.indexOf(elem) > 5){
+                                                                return <li id="catalogLink" key={`${elem + i}`} className="catalog__right-item-list-item">
+                                                                            <NavLink to={`/category/${elem.pathSubSubCategories}`}>
+                                                                                {elem.titleSubSubCategories}
+                                                                            </NavLink>
+                                                                        </li>
+                                                            }
+                                                        })}
+                                                        </ul>
+                                                        <li key={'arrow'+i} className="catalog__right-item-arrow"><div>Ещё</div> <span></span></li>
+                                                    </>}
+                                                </ul>
+                                            </li>
+                                })}
+                            </div>
+                        })}
+                    </ul>
+                </>
+    }
 }
 
 function creteContCatalogListRight(startCategory, scrollWidth){
@@ -300,14 +322,14 @@ function creteContCatalogListRight(startCategory, scrollWidth){
     return newarr
 }
 
-function eventClick(catalogCategories, setCatalogActiveName){
+function eventClick(setCatalogActiveName){
     const body = document.querySelector('.body')
     body.addEventListener('click', clickFn)
 
     function clickFn(event){
         const target = event.target
 
-        if(target.closest('.header__catalog')|| target.closest('.catalog__cross')){
+        if(target.closest('.header__catalog')|| target.closest('.catalog__cross') || target.closest('#catalogLink')){
             const blur = document.querySelector('.body-blackBlur')
             const catalog = document.querySelector('.catalog')
             const body = document.querySelector('.body')
