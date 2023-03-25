@@ -196,6 +196,25 @@ body.hidden{
       height: 14px;
     }
   }
+  &__box-bottom {
+    padding: 10px 0;
+    display: flex; justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1%;
+  }
+  &__box-bottom-item {
+    flex: 9%;
+    min-width: fit-content;
+    text-align: center;
+    padding: 5px;
+    background-color: rgba(0, 0, 0, 0);
+    font-weight: 600;
+    transition: 0.3s;
+    &:hover{
+      color: #005bff;
+    }
+    & a{color: #000;}
+  }
 }
 
 @media (max-width: 1023.98px){
@@ -481,7 +500,5 @@ body.hidden{
     padding: 10px 0 5px 0;
     border-radius: 10px 10px 0 0;
   }
-}
-@media (max-width: 479.98px){
-   
+  .header__box-bottom{padding: 10px 0 0 0;}
 }
