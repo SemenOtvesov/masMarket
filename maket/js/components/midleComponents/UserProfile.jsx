@@ -14,8 +14,20 @@ export default (props)=>{
     return(
         <>
             {scrollWidth > 768 ? 
-            <ElementAdvertisement type='line' sorce={{name:"midleAdvertisement-sale-image", 
-            className:'bold', altText:''}}/>:''}
+             <div className="mainContentFlexBox">
+                {props.quantityEl( 
+                    <>
+                        <ElementAdvertisement type='midle' sorce={{name:"midleAdvertisement-sale-image", altText:''}}/>
+                        <ElementAdvertisement type='midle' sorce={{name:"midleAdvertisement-sale-image", altText:''}}/>
+                    </>,
+                    <>
+                        <ElementAdvertisement type='midle' sorce={{name:"midleAdvertisement-sale-image-mbv", altText:''}}/>
+                        <ElementAdvertisement type='midle' sorce={{name:"midleAdvertisement-sale-image-mbv", altText:''}}/>
+                    </>,
+                    <ElementAdvertisement type='midle' sorce={{name:"midleAdvertisement-sale-image-mbv", altText:''}}
+                />)}
+            </div>
+            :''}
 
             <div className="mainUserProfile__element">
                 <div className="mainUserProfile__element-title">Мои данные</div>

@@ -16,7 +16,7 @@ export default (props)=>{
                     {contentSlidebar(scrollWidth, props, 
                     <>
                         <div className="mainUserProfile__right">
-                            <props.rigthContent user={props.user}/>
+                            <props.rigthContent user={props.user} quantityEl={props.quantityEl}/>
                         </div>
                     </>)}
                 </div>

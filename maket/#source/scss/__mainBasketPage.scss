@@ -303,6 +303,26 @@
       &:hover{opacity: 1;}
     }
   }
+
+  &__popap{
+    padding: 20px;
+    & > .mainUserProfile__popap-wraper{
+      display: flex; flex-direction: column; gap: 20px;
+    }
+    &-text{
+      text-align: center;
+    }
+    &-button{
+      margin: 0 auto;
+      width: fit-content;
+      background-color: $mainBlue;
+      color: #FFF;
+      border-radius: 10px;
+      font-weight: 500;
+      padding: 10px 30px;
+      margin-bottom: 20px;
+    }
+  }
 }
 
 @media (max-width: 1170px){

@@ -25,7 +25,7 @@ export default (props)=>{
         const pcV = 
         <div id="mainBasketRight" className="bchGray mainBasket__right">
             <div className="mainBasket__right-item">
-                <button className="mainBasket__right-button">Перейти к оформлению</button>
+                <button id="makingOrderBtn"  className="mainBasket__right-button">Перейти к оформлению</button>
                 <div className="mainBasket__right-text">
                     Доступные способы и время доставки можно выбрать при оформлении заказа
                 </div>
@@ -62,7 +62,7 @@ export default (props)=>{
                 <div id="quantAndWeightAllProd" className="mainBasket__right-item-text gray"> </div>
             </div>
             <div className="mainBasket__right-item">
-                <button className="mainBasket__right-button">Перейти к оформлению</button>
+                <button id="makingOrderBtn" className="mainBasket__right-button">Перейти к оформлению</button>
             </div>
         </div>;
 
@@ -86,6 +86,13 @@ export default (props)=>{
                             </div>
                         </div>
                         {props.quantityEl(pcV,scrollWidth > 1023 ? pcV :mbV,mbV,)}
+                        <div id="makingOrderPopap" className="mainUserProfile__popap mainBasket__popap">
+                            <div className="mainUserProfile__popap-wraper">
+                                <div className="mainUserProfile__popap-title"><div></div><span onClick={clickLogin}></span></div>
+                                <div className="mainBasket__popap-text">Спасибо за ваш заказ, с вами свяжется наш менджер</div>
+                                <button onClick={clickLogin} className="mainBasket__popap-button">Ожидать</button>
+                            </div>
+                        </div>
                     </div >
                 </div>
             </div>
@@ -108,4 +115,13 @@ function mobileFooterMargin(scrollWidth){
             footer.style.marginBottom = mainBasketRight.offsetHeight + headerItemBtnBox.offsetHeight + 'px'
         }
     }
+}
+
+function clickLogin(){
+    const body = document.querySelector('body')
+    const bodyBlur = document.querySelector('.body-blackBlur')
+    const popap = document.getElementById('makingOrderPopap')
+    body.classList.toggle('hidden')
+    bodyBlur.classList.toggle('active')
+    popap.classList.toggle('active')
 }

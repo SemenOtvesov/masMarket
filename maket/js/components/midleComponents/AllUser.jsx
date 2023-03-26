@@ -12,9 +12,6 @@ export default ()=>{
         }
     },[location])
 
-    const imgPathPng = '../img/icon/png/'
-    const imgPathWebp = '../img/icon/webp/'
-
     return(
         <>
             <div className="mainUserProfile__nonDef">
@@ -23,7 +20,7 @@ export default ()=>{
             </div>
             <div className="mainUserProfile__popap">
                 <div className="mainUserProfile__popap-wraper">
-
+                    
                     <form action="#" id="popapMain" className="mainUserProfile__popap-main">
                         <div className="mainUserProfile__popap-title">Войти в аккаунт <span onClick={clickLogin}></span></div>
                         <div className="mainUserProfile__popap-input-box">
@@ -40,22 +37,6 @@ export default ()=>{
                             <div className="mainUserProfile__popap-input-falPass" style={{textAlign: 'center'}}>Неверный логин или пароль</div>
                         </button>
                         <div className="mainUserProfile__popap-separator"><div>или</div></div>
-                        <div className="mainUserProfile__popap-button black">
-                            <picture id="icon" data-icon-name='logo-apple' className="loading-img">
-                                <div id="equalSidesRev" className="img-mask"></div>
-                                <source srcSet=''/>
-                                <img src='' className="mainUserProfile__popap-button-img" alt="" />
-                            </picture>
-                            <div>Вход с Apple</div>
-                        </div>
-                        <div className="mainUserProfile__popap-button gray">
-                            <picture id="icon" data-icon-name='logo-gosUslugi' className="loading-img">
-                                <div id="equalSidesRev" className="img-mask"></div>
-                                <source srcSet=''/>
-                                <img src='' className="mainUserProfile__popap-button-img" alt="" />
-                            </picture>
-                            <div>Вход через Госуслуги</div>
-                        </div>
                         <div onClick={actReg} className="mainUserProfile__popap-button blue">Зарегестрироваться</div>
                     </form>
 
