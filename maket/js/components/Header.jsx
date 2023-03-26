@@ -196,8 +196,10 @@ function sequenceHeaderRight(scrollWidth){
                         <div id="equalSidesRev" className="img-mask"></div>
                         <source srcSet=''/>
                         <img src='' alt="" />
+                        <div id="equalSidesRev" data-header-item-counter='orders' className="header__box-top-item-counter"></div>
                     </picture>
                     <div className="header__user-button-text">Заказы</div>
+                    
                 </div>
             </button>
         </NavLink>
@@ -208,8 +210,10 @@ function sequenceHeaderRight(scrollWidth){
                         <div id="equalSidesRev" className="img-mask"></div>
                         <source srcSet=''/>
                         <img src='' alt="" />
+                        <div id="equalSidesRev" data-header-item-counter='favorites' className="header__box-top-item-counter"></div>
                     </picture>
                     <div className="header__user-button-text">Избранное</div>
+                    
                 </div>
             </button>
         </NavLink>
@@ -220,6 +224,7 @@ function sequenceHeaderRight(scrollWidth){
                         <div id="equalSidesRev" className="img-mask"></div>
                         <source srcSet=''/>
                         <img src='' alt="" />
+                        <div id="equalSidesRev" data-header-item-counter='basket' className="header__box-top-item-counter"></div>
                     </picture>
                     <div className="header__user-button-text">Корзина</div>
                 </div>

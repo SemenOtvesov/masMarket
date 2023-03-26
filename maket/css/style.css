@@ -81,7 +81,6 @@ h1, h2, h3, h4, h5, h6 {
   min-height: 100%;
   display: flex;
   flex-direction: column;
-  overflow: hidden;
 }
 
 [class*=__container] {
@@ -130,6 +129,7 @@ body.hidden {
 .header__box-top-item {
   height: 100%;
   background-color: rgba(255, 255, 255, 0);
+  position: relative;
 }
 .header__box-top-item-input {
   width: 50%;
@@ -144,11 +144,34 @@ body.hidden {
 .header__box-top-item-button.active div {
   color: #005bff;
 }
+.header__box-top-item-button.active .header__box-top-item-counter {
+  color: #fff;
+}
+.header__box-top-item-button picture {
+  overflow: visible;
+}
 .header__box-top-item-button-box {
   display: flex;
   gap: 10px;
   flex: 1 1;
   justify-content: space-between;
+}
+.header__box-top-item-counter {
+  position: absolute;
+  top: 0;
+  right: 0;
+  transform: translate(50%, -50%);
+  border-radius: 50%;
+  background-color: #005bff;
+  color: #fff;
+  font-size: 10px;
+  padding: 2px;
+  min-width: -moz-fit-content;
+  min-width: fit-content;
+  opacity: 0;
+}
+.header__box-top-item-counter.active {
+  opacity: 1;
 }
 .header__title-box {
   position: relative;
@@ -299,7 +322,7 @@ body.hidden {
 }
 .header__user-button-text {
   overflow: hidden;
-  height: 14px;
+  height: 1.5em;
 }
 .header__box-bottom {
   padding: 10px 0;
@@ -1710,6 +1733,7 @@ picture {
   gap: 10px;
   position: relative;
   text-align: center;
+  cursor: pointer;
 }
 .mainUserProfile__popap-button.disabled {
   opacity: 0.7;
@@ -2655,6 +2679,28 @@ picture {
 }
 .mainBasket__und a:hover {
   opacity: 1;
+}
+.mainBasket__popap {
+  padding: 20px;
+}
+.mainBasket__popap > .mainUserProfile__popap-wraper {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+.mainBasket__popap-text {
+  text-align: center;
+}
+.mainBasket__popap-button {
+  margin: 0 auto;
+  width: -moz-fit-content;
+  width: fit-content;
+  background-color: #005bff;
+  color: #FFF;
+  border-radius: 10px;
+  font-weight: 500;
+  padding: 10px 30px;
+  margin-bottom: 20px;
 }
 
 @media (max-width: 1170px) {

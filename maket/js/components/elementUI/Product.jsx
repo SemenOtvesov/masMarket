@@ -26,7 +26,7 @@ export default ({idProd, favoritCheck})=>{
                     <div id="productOldPrise" className="product__prise-old"></div>
                 </div>
                 <div id="productTitle" className="product__title"></div>
-                <button className="product__button">В корзину</button>
+                <button className="product__button">Подробнее</button>
             </div>
         </div>
     )

@@ -46,8 +46,6 @@ export default ()=>{
                 setUserUid(us.uid)
             }
         })
-
-
         const clickFn = windowListenerClick.bind(event, navigate, setUser, signOut, auth, storage)
         window.addEventListener('click', clickFn)
         const inputFn = windowListenerInput.bind(event, setCheckRequest)
@@ -73,6 +71,8 @@ export default ()=>{
         )
         equalSidesFn(scrollWidth)
         appLoaderImg(storage)
+        mobileFooterMargin(scrollWidth)
+        if(userVar){addCountersHeader(userBasketProds, userFavoritesList, userVar.orserList)}
 
         const selects = document.querySelectorAll('#select')
         if(selects){return buttonSelected(selects)}
@@ -130,6 +130,7 @@ export default ()=>{
                     }
                     bodyBlur(); 
                     setUser(userDB)
+                    
                 }
             }).catch(error=>{})
             if(checkUser){
@@ -206,6 +207,23 @@ async function windowListenerClick(navigate, setUser, signOut, auth, storage, ev
             inputCh.dataset.inputChAll = inputChAll
         }else{
             inputCh.firstElementChild.classList.toggle('active')
+
+            let checkAllMark = false
+            inputChes.forEach(el=>{
+                if(!el.dataset.inputChAll){
+                    if(el.lastElementChild.className.split(' ')[1] !== 'active'){
+                        checkAllMark = true
+                    }
+                }
+            })
+            const checkAll = document.querySelector('[data-input-ch-all]')
+            if(checkAllMark){
+                checkAll.firstElementChild.classList.remove('active')
+                checkAll.dataset.inputChAll = false
+            }else{
+                checkAll.firstChild.classList.add('active')
+                checkAll.dataset.inputChAll = true
+            }
         }
 
         if(inputChes){
@@ -257,6 +275,7 @@ async function windowListenerClick(navigate, setUser, signOut, auth, storage, ev
                             userBasketProds.forEach(el=>{
                                 if((el.idProd === key.elName) && (el.select === key.elSelect)){
                                     userBasketProds.splice(userBasketProds.indexOf(el), 1)
+                                    if(userVar){addCountersHeader(userBasketProds, userFavoritesList, userVar.orserList)}
                                     navigate('./basket')
                                 }
                             })
@@ -340,6 +359,7 @@ async function windowListenerClick(navigate, setUser, signOut, auth, storage, ev
                         button.children[0].innerHTML = 'В корзине'
                         button.classList.add('blocked')
                         button.classList.remove('loading-img')
+                        if(userVar){addCountersHeader(userBasketProds, userFavoritesList, userVar.orserList)}
                     })
                 }
             }else{
@@ -360,6 +380,7 @@ async function windowListenerClick(navigate, setUser, signOut, auth, storage, ev
                                 userBasketProds.forEach(el=>{
                                     if((el.idProd === button.dataset.prodIdBtn) && (el.select === selectAct.dataset.prodSelect)){
                                         userBasketProds.splice(userBasketProds.indexOf(el), 1)
+                                        if(userVar){addCountersHeader(userBasketProds, userFavoritesList, userVar.orserList)}
                                     }
                                 })
                                 button.classList.remove('loading-img','blocked')
@@ -395,6 +416,7 @@ async function windowListenerClick(navigate, setUser, signOut, auth, storage, ev
                             method: 'DELETE'
                         }).then(rez=>{
                             userFavoritesList.splice(userFavoritesList.indexOf(buttonSubmit.dataset.prodIdBtn), 1)
+                            if(userVar){addCountersHeader(userBasketProds, userFavoritesList, userVar.orserList)}
                             favourBtn.classList.remove('active')
                             favourBtn.children[1].innerHTML = 'В избранное'
                         })
@@ -406,6 +428,7 @@ async function windowListenerClick(navigate, setUser, signOut, auth, storage, ev
                 body: JSON.stringify(buttonSubmit.dataset.prodIdBtn)
             }).then(rez=>{
                 userFavoritesList.push(buttonSubmit.dataset.prodIdBtn)
+                if(userVar){addCountersHeader(userBasketProds, userFavoritesList, userVar.orserList)}
                 favourBtn.classList.add('active')
                 favourBtn.children[1].innerHTML = 'В избранном'
             })
@@ -432,6 +455,7 @@ async function windowListenerClick(navigate, setUser, signOut, auth, storage, ev
                             method: 'DELETE'
                         }).then(rez=>{
                             userFavoritesList.splice(userFavoritesList.indexOf(product.dataset.productId), 1)
+                            if(userVar){addCountersHeader(userBasketProds, userFavoritesList, userVar.orserList)}
                             navigate('/favorites')
                             equalSidesFn()
                             appLoaderImg(storage)
@@ -447,6 +471,15 @@ async function windowListenerClick(navigate, setUser, signOut, auth, storage, ev
                 navigate(`product/${product.dataset.productId}`)
             }
         }
+    }
+
+    if(target.closest('#makingOrderBtn')){
+        const body = document.querySelector('body')
+        const bodyBlur = document.querySelector('.body-blackBlur')
+        const popap = document.getElementById('makingOrderPopap')
+        body.classList.toggle('hidden')
+        bodyBlur.classList.toggle('active')
+        popap.classList.toggle('active')
     }
 }
 
@@ -633,6 +666,9 @@ function equalSidesFn(scrollWidth){
         if(((el.closest('#product')||(el.closest('#adv'))||(el.closest('#icon'))||(el.closest('#brandIcon')))) 
         && (el.parentElement.className !== 'loading-img')){
             el.style.width = '100%'
+        }
+        if(el.closest('.header__box-top-item-counter')){
+            el.style.width = el.offsetHeight + 'px'
         }
     })
 }
@@ -915,4 +951,33 @@ function mobileFooterMargin(scrollWidth){
     if(scrollWidth < 426){
         footer.style.marginBottom = headerItemBtnBox.offsetHeight + 'px'
     }
+}
+
+function addCountersHeader(basketProds, favoritesList, orderList){
+    const basketCounter = document.querySelector('[data-header-item-counter="basket"]')
+    const favoritesCounter = document.querySelector('[data-header-item-counter="favorites"]')
+    const orderCounter = document.querySelector('[data-header-item-counter="orders"]')
+
+    if(basketProds && Object.keys(basketProds).length > 0){
+        basketCounter.innerHTML = Object.keys(basketProds).length
+        basketCounter.classList.add('active')
+    }else{
+        basketCounter.innerHTML = ''
+        basketCounter.classList.remove('active')
+    }
+    if(favoritesList && Object.keys(favoritesList).length > 0){
+        favoritesCounter.innerHTML = Object.keys(favoritesList).length
+        favoritesCounter.classList.add('active')
+    }else{
+        favoritesCounter.innerHTML = ''
+        favoritesCounter.classList.remove('active')
+    }
+    if(orderList && Object.keys(orderList).length > 0){
+        orderCounter.innerHTML = Object.keys(orderList).length
+        orderCounter.classList.add('active')
+    }else{
+        orderCounter.innerHTML = ''
+        orderCounter.classList.remove('active')
+    }
+    equalSidesFn()
 }
