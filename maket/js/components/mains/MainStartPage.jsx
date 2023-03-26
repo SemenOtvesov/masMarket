@@ -40,7 +40,7 @@ export default (props)=>{
                         <ElementAdvertisement type='mini'sorce={{name:"miniAdvertisement-image-mbv", altText:''}}/>
                     </>, 
                     <>
-                        <ElementAdvertisement type='mini'sorce={{name:"miniAdvertisement-image-mbv", altText:''}}/>
+                        <ElementAdvertisement type='mini'sorce={{name:"miniAdvertisement-image-mbv", className: 'mobile', altText:''}}/>
                     </>)}
                 </div>
                 <div className="mainContentFlexBox">
@@ -62,7 +62,7 @@ export default (props)=>{
                         <ElementAdvertisement type='mini'sorce={{name:"miniAdvertisement-image-mbv", altText:''}}/>
                     </>, 
                     <>
-                        <ElementAdvertisement type='mini'sorce={{name:"miniAdvertisement-image-mbv", altText:''}}/>
+                        <ElementAdvertisement type='mini'sorce={{name:"miniAdvertisement-image-mbv", className: 'mobile', altText:''}}/>
                     </>)}
                 </div>
                 <div className="mainContentFlexBox">
@@ -75,7 +75,7 @@ export default (props)=>{
                             <ElementAdvertisement type='midle' sorce={{name:"midleAdvertisement-sale-image-mbv", altText:''}}/>
                             <ElementAdvertisement type='midle' sorce={{name:"midleAdvertisement-sale-image-mbv", altText:''}}/>
                         </>,
-                        <ElementAdvertisement type='midle' sorce={{name:"midleAdvertisement-sale-image-mbv", altText:''}}/>)
+                        <ElementAdvertisement type='midle' sorce={{name:"midleAdvertisement-sale-image-mbv",className: 'mobile', altText:''}}/>)
                     }
                 </div>
                 <div className="mainContentFlexBox__title">Только до 24.01!</div>
@@ -92,8 +92,11 @@ export default (props)=>{
                             <ElementAdvertisement type='midle' sorce={{name:"midleAdvertisement-sale-image", altText:''}}/>
                             <ElementAdvertisement type='midle' sorce={{name:"midleAdvertisement-sale-image", altText:''}}/>
                         </>,
-                        <ElementAdvertisement type='midle' sorce={{name:"midleAdvertisement-sale-image-mbv", altText:''}}/>,
-                        <ElementAdvertisement type='midle' sorce={{name:"midleAdvertisement-sale-image-mbv", altText:''}}/>)
+                        <>
+                            <ElementAdvertisement type='midle' sorce={{name:"midleAdvertisement-sale-image-mbv", altText:''}}/>
+                            <ElementAdvertisement type='midle' sorce={{name:"midleAdvertisement-sale-image-mbv", altText:''}}/>
+                        </>,
+                        <ElementAdvertisement type='midle' sorce={{name:"midleAdvertisement-sale-image-mbv",className: 'mobile', altText:''}}/>)
                     }
                 </div>
                 <div className="mainContentFlexBox">
@@ -115,7 +118,7 @@ export default (props)=>{
                         <ElementAdvertisement type='mini'sorce={{name:"miniAdvertisement-image-mbv", altText:''}}/>
                     </>, 
                     <>
-                        <ElementAdvertisement type='mini'sorce={{name:"miniAdvertisement-image-mbv", altText:''}}/>
+                        <ElementAdvertisement type='mini'sorce={{name:"miniAdvertisement-image-mbv", className: 'mobile', altText:''}}/>
                     </>)}
                 </div>
                 {props.quantityEl(
