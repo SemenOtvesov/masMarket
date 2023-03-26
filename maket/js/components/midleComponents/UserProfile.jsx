@@ -24,7 +24,7 @@ export default (props)=>{
                         <ElementAdvertisement type='midle' sorce={{name:"midleAdvertisement-sale-image-mbv", altText:''}}/>
                         <ElementAdvertisement type='midle' sorce={{name:"midleAdvertisement-sale-image-mbv", altText:''}}/>
                     </>,
-                    <ElementAdvertisement type='midle' sorce={{name:"midleAdvertisement-sale-image-mbv", altText:''}}
+                    <ElementAdvertisement type='midle' sorce={{name:"midleAdvertisement-sale-image-mbv",className: 'mobile', altText:''}}
                 />)}
             </div>
             :''}

@@ -964,10 +964,17 @@ picture {
   flex: 0 0 30%;
   height: 150px;
 }
+.miniAdvertisement.mobile {
+  height: 150px;
+}
 
 .midleAdvertisement {
   flex: 0 0 49%;
   height: 200px;
+}
+.midleAdvertisement.mobile {
+  height: 130px;
+  flex: 0 0 100%;
 }
 
 @media (max-width: 1170px) {
