@@ -116,7 +116,10 @@ export default ()=>{
                             <div className="mainUserProfile__popap-input-check"></div>
                             <div className="mainUserProfile__popap-input-falPass"></div>
                         </div>
-                        <button tabIndex={10} disabled type="submit" onClick={actReg} className="mainUserProfile__popap-button blue disabled">Зарегестрироваться</button>
+                        <button tabIndex={10} disabled type="submit" onClick={actReg} className="mainUserProfile__popap-button blue disabled">
+                            Зарегестрироваться
+                            <div className="mainUserProfile__popap-input-falPass" style={{textAlign: 'center'}}>Данный аккаунт уже существует</div>
+                            </button>
                     </form>
                 </div>
             </div>

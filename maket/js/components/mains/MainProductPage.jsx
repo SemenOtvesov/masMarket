@@ -2,13 +2,16 @@ import React, {useEffect, useState} from "react";
 import { useParams, useLocation } from "react-router-dom";
 import { getDownloadURL, ref } from "firebase/storage";
 
-export default ({userBasketProds, userFavoritesList, storage, equalSidesFn, firebaseConfig})=>{
+export default ({userBasketProds, userFavoritesList, storage, equalSidesFn, firebaseConfig, appLoaderImg})=>{
     const location = useLocation()
     const params = useParams()
     const [urlListProd, setUrlListProd] = useState([])
     const [urlListSelects, setUrlListSelects] = useState([])
     const [infoListSelects, setInfoListSelects] = useState([])
     const [urlListReviews, setUrlListReviews] = useState([])
+    const [listReviewsText, setListReviewsText] = useState([])
+    const [listQuestionText, setListQuestionText] = useState([])
+    let listReviewsTextCheck; let listQuestionTextCheck;
     
     let scrollWidth = Math.max(
         document.body.scrollWidth, document.documentElement.scrollWidth,
@@ -22,9 +25,6 @@ export default ({userBasketProds, userFavoritesList, storage, equalSidesFn, fire
             document.body.offsetWidth, document.documentElement.offsetWidth,
             document.body.clientWidth, document.documentElement.clientWidth
         );
-        if(scrollWidth < 769){
-            mobileFooterMargin(scrollWidth)
-        }
         if(scrollWidth < 426){
             const bottomLastItem = document.getElementById('bottomLastItem')
             const headerItemBtnBox = document.getElementById('headerItemBtnBox')
@@ -77,26 +77,46 @@ export default ({userBasketProds, userFavoritesList, storage, equalSidesFn, fire
             }
         }
 
-        let iteratorSelectsReviews = 0
+        let iteratorReviews = 0
         const urlListReviews = []
         recursionDownloadUrlReviews()
         async function recursionDownloadUrlReviews(){
             let checkCall = true
             if(checkCall){
-                await getDownloadURL(ref(storage, `image/products/userReviews/webp/${params.idProduct}/${iteratorSelectsReviews + 1}.webp`))
-                .then(url => urlListReviews.push({webp:url}))
+                await getDownloadURL(ref(storage, `image/products/userReviews/webp/${params.idProduct}/${iteratorReviews + 1}.webp`))
+                .then(url =>urlListReviews.push({webp:url}))
                 .catch(error=>checkCall = false)
             }
             if(checkCall){
-                await getDownloadURL(ref(storage, `image/products/userReviews/png/${params.idProduct}/${iteratorSelectsReviews + 1}.png`))
-                .then((url) => urlListReviews[iteratorSelectsReviews].png = url)
+                await getDownloadURL(ref(storage, `image/products/userReviews/png/${params.idProduct}/${iteratorReviews + 1}.png`))
+                .then((url) => urlListReviews[iteratorReviews].png = url)
                 .catch(error=>checkCall = false)
-                iteratorSelectsReviews++
+                iteratorReviews++
                 recursionDownloadUrlReviews()
             }
             if(!checkCall){
                 setUrlListReviews(urlListReviews)
             }
+        }
+
+        recursionDownloadReviewsText()
+        async function recursionDownloadReviewsText(){
+            await fetch(`${firebaseConfig.databaseURL}prodList.json?orderBy="id"&equalTo="${params.idProduct}"`).then(rez=>rez.json()).then(rez=>{
+                if(Object.values(Object.values(rez)[0].reviewsList[0])[1] !== listReviewsTextCheck){
+                    setListReviewsText(Object.values(rez)[0].reviewsList);
+                    listReviewsTextCheck = Object.values(Object.values(rez)[0].reviewsList[0])[1]
+                }
+            })
+        }
+
+        recursionDownloadQuestionText()
+        async function recursionDownloadQuestionText(){
+            await fetch(`${firebaseConfig.databaseURL}prodList.json?orderBy="id"&equalTo="${params.idProduct}"`).then(rez=>rez.json()).then(rez=>{
+                if(Object.values(Object.values(rez)[0].questionList[0])[1] !== listQuestionTextCheck){
+                    setListQuestionText(Object.values(rez)[0].questionList);
+                    listReviewsTextCheck = Object.values(Object.values(rez)[0].questionList[0])[1]
+                }
+            })
         }
     },[location.pathname])
 
@@ -104,44 +124,17 @@ export default ({userBasketProds, userFavoritesList, storage, equalSidesFn, fire
         createSliderItem(urlListProd);
         equalSidesFn(scrollWidth)
     }, [urlListProd])
-    
+
     useEffect(()=>{
-        const selectAct = document.querySelector('[data-prod-select].active')
-        if(selectAct){
-            const prodSelectType = document.getElementById('prodSelectType')
+        createReviewsItems(listReviewsText)
+        appLoaderImg(storage)
+    }, [listReviewsText])
+
+    useEffect(()=>{
+        createQuestionItems(listQuestionText)
+        appLoaderImg(storage)
+    }, [listQuestionText])
     
-            const span = document.createElement('span')
-            span.innerHTML = selectAct.dataset.prodSelect
-    
-            if(prodSelectType.children[0] === undefined){
-                prodSelectType.append(span)
-            }
-            prodSelectType.dataset.prodSelectValue = selectAct.dataset.prodSelect
-        }
-
-        if(userBasketProds[0] !== undefined){
-            if(selectAct){
-                userBasketProds.forEach(el=>{
-                    if((el.idProd === params.idProduct) && (el.select === selectAct.dataset.prodSelect)){
-                        const btn = document.getElementById('btnProdAddBasket')
-                        btn.children[0].innerHTML = 'В корзине'
-                        btn.classList.add('blocked')
-                    }
-                })
-            }
-        }
-
-        if(userFavoritesList[0] !== undefined){
-            userFavoritesList.forEach(el=>{
-                if(params.idProduct === el){
-                    const favourBtn = document.querySelector('#favourBtn')
-                    favourBtn.classList.add('active')
-                    favourBtn.children[1].innerHTML = 'В избранном'
-                }
-            })
-        }
-    })
-
     useEffect(()=>{
         if(urlListSelects[0] !== undefined){
             fetch(`${firebaseConfig.databaseURL}prodList.json?orderBy="id"&equalTo="${params.idProduct}"`).then(rez=>rez.json()).then(rez=>{
@@ -158,6 +151,42 @@ export default ({userBasketProds, userFavoritesList, storage, equalSidesFn, fire
         equalSidesFn(scrollWidth)
     }, [urlListReviews])
 
+    useEffect(()=>{
+            const selectAct = document.querySelector('[data-prod-select].active')
+            if(selectAct){
+                const prodSelectType = document.getElementById('prodSelectType')
+        
+                const span = document.createElement('span')
+                span.innerHTML = selectAct.dataset.prodSelect
+        
+                if(prodSelectType.children[0] === undefined){
+                    prodSelectType.append(span)
+                }
+                prodSelectType.dataset.prodSelectValue = selectAct.dataset.prodSelect
+            }
+
+            if(userBasketProds[0] !== undefined){
+                if(selectAct){
+                    userBasketProds.forEach(el=>{
+                        if((el.idProd === params.idProduct) && (el.select === selectAct.dataset.prodSelect)){
+                            const btn = document.getElementById('btnProdAddBasket')
+                            btn.children[0].innerHTML = 'В корзине'
+                            btn.classList.add('blocked')
+                        }
+                    })
+                }
+            }
+
+            if(userFavoritesList[0] !== undefined){
+                userFavoritesList.forEach(el=>{
+                    if(params.idProduct === el){
+                        const favourBtn = document.querySelector('#favourBtn')
+                        favourBtn.classList.add('active')
+                        favourBtn.children[1].innerHTML = 'В избранном'
+                    }
+                })
+            }
+    })
     
     return (
         <div className="mainProduct">
@@ -181,20 +210,10 @@ export default ({userBasketProds, userFavoritesList, storage, equalSidesFn, fire
 									</div>
 							</div>
 
-                            <div className="mainProduct__top-item">
-                                <div className="mainProduct__top-item-text">1 отзыв</div>
+                            <div id="reviewsBtn" className="mainProduct__top-item">
+                                <div id="reviewsCounter" className="mainProduct__top-item-text"></div>
                             </div>
-                            <div className="mainProduct__top-item">
-                                <div className="mainProduct__top-item-img">
-                                    <picture id="icon" data-icon-name='video' className="loading-img">
-                                        <div id="equalSidesRev" className="img-mask"></div>
-                                        <source srcSet=''/>
-                                        <img src='' alt="" />
-                                    </picture>
-                                </div>
-                                <div className="mainProduct__top-item-text">66 видео</div>
-                            </div>
-                            <div className="mainProduct__top-item">
+                            <div id="questionBtn" className="mainProduct__top-item">
                                 <div className="mainProduct__top-item-img">
                                     <picture id="icon" data-icon-name='question' className="loading-img">
                                         <div id="equalSidesRev" className="img-mask"></div>
@@ -202,7 +221,7 @@ export default ({userBasketProds, userFavoritesList, storage, equalSidesFn, fire
                                         <img src='' alt="" />
                                     </picture>
                                 </div>
-                                <div className="mainProduct__top-item-text">18 вопросов</div>
+                                <div id="questionCounter" className="mainProduct__top-item-text"></div>
                             </div>
                             <div id="favourBtn" className="mainProduct__top-item">
                                 <div className="mainProduct__top-item-img">
@@ -345,7 +364,7 @@ export default ({userBasketProds, userFavoritesList, storage, equalSidesFn, fire
                                 </div>
 
                                 <div className="mainProduct__bottom-setings-linkDescription">Перейти к описанию</div>
-                            </div>
+                            </div> 
                         </div>
                         <div id="bottomLastItem" className="mainProduct__bottom-item">
                             <div className="mainProduct__bottom-order bchGray">
@@ -364,6 +383,9 @@ export default ({userBasketProds, userFavoritesList, storage, equalSidesFn, fire
                         </div>
                     </div>
                     <div className="mainProduct__bottom-bottomBox">
+                        <div id="reviewsBtn" className="mainProduct__bottom-reviewsImgBox">
+                            {createReviews(urlListReviews)}
+                        </div>
                         <div className="mainProduct__bottom-seller-info">
                             <div className="mainProduct__bottom-seller-left">
                                 <div className="mainProduct__bottom-seller-logo">
@@ -397,6 +419,26 @@ export default ({userBasketProds, userFavoritesList, storage, equalSidesFn, fire
                                 </div>
                             </div>
                         </div>
+                    </div>
+                </div>
+                <div id="reviewsBox" className="mainProduct__reviews bchGray">
+                    <div className="mainProduct__reviews__container">
+                        <div className="mainProduct__reviews-top">
+                            <div></div><span id="reviewsBtn"></span>
+                        </div>
+                        <ul className="mainProduct__reviews-bottom">
+                            {createReviewsItems(listReviewsText)}
+                        </ul>
+                    </div>
+                </div>
+                <div id="questionBox" className="mainProduct__reviews bchGray">
+                    <div className="mainProduct__reviews__container">
+                        <div className="mainProduct__reviews-top">
+                            <div></div><span id="questionBtn"></span>
+                        </div>
+                        <ul className="mainProduct__reviews-bottom">
+                            {createQuestionItems(listQuestionText)}
+                        </ul>
                     </div>
                 </div>
             </div>
@@ -519,6 +561,14 @@ function slideFn(mainImg, nextTargetImg, nextTargetSource, targetImg, targetSour
 
 function createReviews(urlListReviews){
     let i = 0
+    if(urlListReviews[0]){
+        let text = 1;
+        if([1].includes(urlListReviews.length % 10)){text = ' отзыв'}
+        if([2,3,4].includes(urlListReviews.length % 10)){text = ' отзыва'}
+        if([5,6,7,8,9,0].includes(urlListReviews.length % 10)){text = ' отзывов'}
+        
+        document.getElementById('reviewsCounter').innerHTML = urlListReviews.length + text
+    }
     if(urlListReviews.length > 5){
         let mapI = 0
         return urlListReviews.map(el=>{
@@ -533,7 +583,7 @@ function createReviews(urlListReviews){
                 if(mapI === 0){
                     mapI++
                     return(<div id="equalSides" key={el.webp + `${i++}`} className="mainProduct__bottom-reviewsImg-blur">
-                        <div className="mainProduct__bottom-reviewsImg-text">{urlListReviews.length}+</div>
+                        <div className="mainProduct__bottom-reviewsImg-text">+{urlListReviews.length - 5}</div>
                         <picture>
                             <source srcSet={el.webp}/>
                             <img src={el.png} alt="" />
@@ -554,14 +604,77 @@ function createReviews(urlListReviews){
     }
 }
 
-function mobileFooterMargin(scrollWidth){
-    const prisebox = document.querySelector('.mainProduct__bottom-order')
-    const footer = document.querySelector('.footer')
-    const headerItemBtnBox = document.getElementById('headerItemBtnBox')
-    if(scrollWidth > 425){
-        footer.style.marginBottom = prisebox.offsetHeight + 'px'
-    }else{
-        footer.style.marginBottom = prisebox.offsetHeight + headerItemBtnBox.offsetHeight + 'px'
+function createReviewsItems(urlListReviewsText){
+    if(urlListReviewsText[0]){
+        return urlListReviewsText.map(el=>{
+            return <li key={urlListReviewsText.indexOf(el)} className="mainProduct__reviews-item">
+                    <div className="mainProduct__reviews-item-top">
+                        <div className="mainProduct__reviews-item-user">
+                            <div id="equalSidesRev" className="mainProduct__reviews-item-user-logo">
+                                <picture id="logo" data-user-uid={el.userUid} className="loading-img">
+                                    <div id="equalSidesRev" className="img-mask"></div>
+                                    <source srcSet=''/>
+                                    <img src='' alt="" />
+                                </picture>
+                            </div>
+                            <div className="mainProduct__reviews-item-user-name">{el.userFullName}</div>
+                        </div>
+                        <div className="estimation mainProduct__reviews-item-estimation">
+                                <div className="estimation__items">
+                                    <input id="rating__5" type="radio" value="5" className="estimation__item" name="rating"/>
+                                    <label htmlFor="rating__5" className="estimation__label"></label>
+                                    <input id="rating__4" type="radio" value="4" className="estimation__item" name="rating"/>
+                                    <label htmlFor="rating__4" className="estimation__label"></label>
+                                    <input id="rating__3" type="radio" value="3" className="estimation__item" name="rating"/>
+                                    <label htmlFor="rating__3" className="estimation__label"></label>
+                                    <input id="rating__2" type="radio" value="2" className="estimation__item" name="rating"/>
+                                    <label htmlFor="rating__2" className="estimation__label"></label>
+                                    <input id="rating__1" type="radio" value="1" className="estimation__item" name="rating"/>
+                                    <label htmlFor="rating__1" className="estimation__label"></label>
+                                </div>
+                        </div>
+                    </div>
+                    <div className="mainProduct__reviews-item-section">
+                        <div className="mainProduct__reviews-item-section-title">Достоинства</div>
+                        <div className="mainProduct__reviews-item-section-text">{el.reviewsDignities}</div>
+                    </div>
+                    <div className="mainProduct__reviews-item-section">
+                        <div className="mainProduct__reviews-item-section-title">Недостатки</div>
+                        <div className="mainProduct__reviews-item-section-text">{el.reviewsDisadvantages ? el.reviewsDisadvantages: 'не указаны'}</div>
+                    </div>
+                </li>
+        })
+    }
+}
+
+function createQuestionItems(listQuestionText){
+    if(listQuestionText[0]){
+        let text = 1;
+        if([1].includes(listQuestionText.length % 10)){text = ' вопрос'}
+        if([2,3,4].includes(listQuestionText.length % 10)){text = ' вопроса'}
+        if([5,6,7,8,9,0].includes(listQuestionText.length % 10)){text = ' вопросов'}
+        
+        document.getElementById('questionCounter').innerHTML = listQuestionText.length + text
+
+        return listQuestionText.map(el=>{
+            return <li key={listQuestionText.indexOf(el)} className="mainProduct__reviews-item">
+                    <div className="mainProduct__reviews-item-top">
+                        <div className="mainProduct__reviews-item-user">
+                            <div id="equalSidesRev" className="mainProduct__reviews-item-user-logo">
+                                <picture id="logo" data-user-uid={el.userUid} className="loading-img">
+                                    <div id="equalSidesRev" className="img-mask"></div>
+                                    <source srcSet=''/>
+                                    <img src='' alt="" />
+                                </picture>
+                            </div>
+                            <div className="mainProduct__reviews-item-user-name">{el.userFullName}</div>
+                        </div>
+                    </div>
+                    <div className="mainProduct__reviews-item-section">
+                        <div className="mainProduct__reviews-item-section-text">{el.question}</div>
+                    </div>
+                </li>
+        })
     }
 }
 
