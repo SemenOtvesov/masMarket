@@ -104,16 +104,17 @@ body.hidden {
   top: 0;
   left: 0;
   width: 100%;
-  height: 100%;
   background-color: rgba(0, 0, 0, 0.5);
   z-index: -1;
   opacity: 0;
   pointer-events: none;
   transition: 0.3s;
+  height: 100vh;
 }
 .body-blackBlur.active {
-  z-index: 10;
+  z-index: 100;
   opacity: 1;
+  height: 300vh;
 }
 
 .hover__button:hover {
@@ -418,7 +419,7 @@ body.hidden {
 }
 .catalog.active {
   top: 50%;
-  z-index: 50;
+  z-index: 101;
   opacity: 1;
 }
 .catalog__main {
@@ -1550,7 +1551,7 @@ picture {
   opacity: 0;
 }
 .mainUserProfile__popap.active {
-  z-index: 10;
+  z-index: 101;
   pointer-events: all;
   top: 50%;
   opacity: 1;
@@ -3386,6 +3387,132 @@ picture {
   width: 1.5em;
   height: 1.5em;
 }
+.mainProduct__reviews {
+  transition: 0.3s;
+  position: fixed;
+  bottom: -100%;
+  left: 0;
+  width: 100%;
+  height: 60%;
+  background-color: #fff;
+  z-index: 50;
+  padding: 20px;
+  border-radius: 10px 10px 0 0;
+  overflow: hidden;
+}
+.mainProduct__reviews.active {
+  bottom: 0;
+}
+.mainProduct__reviews__container {
+  height: 100%;
+}
+.mainProduct__reviews-top {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+.mainProduct__reviews-top span {
+  display: block;
+  position: relative;
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+}
+.mainProduct__reviews-top span::before, .mainProduct__reviews-top span::after {
+  transition: 0.3s;
+  top: 50%;
+  left: 0;
+  position: absolute;
+  height: 2px;
+  width: 100%;
+  transition: 0.3s ease;
+  background-color: #a8a7a7;
+  border-radius: 2px;
+  content: "";
+}
+.mainProduct__reviews-top span::before {
+  transform: rotate(-45deg);
+}
+.mainProduct__reviews-top span::after {
+  transform: rotate(45deg);
+}
+.mainProduct__reviews-top span:hover::before, .mainProduct__reviews-top span:hover::after {
+  background-color: #000;
+}
+.mainProduct__reviews-bottom {
+  height: calc(100% - 40px);
+  overflow: auto;
+  overflow-x: hidden;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+.mainProduct__reviews-bottom::-webkit-scrollbar {
+  width: 10px;
+  background-color: #fff;
+}
+.mainProduct__reviews-bottom::-webkit-scrollbar-thumb {
+  background-color: #a8a7a7;
+  border-radius: 20px;
+  border: 3px solid #fff;
+}
+.mainProduct__reviews-item {
+  border-bottom: 1px solid #a8a7a7;
+}
+.mainProduct__reviews-item:last-child {
+  border: none;
+}
+.mainProduct__reviews-item-user {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+  width: -moz-fit-content;
+  width: fit-content;
+  flex: 0 0 50%;
+  height: 3em;
+}
+.mainProduct__reviews-item-user-logo {
+  position: relative;
+  height: 100%;
+  border-radius: 50%;
+  overflow: hidden;
+}
+.mainProduct__reviews-item-user-logo picture {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+.mainProduct__reviews-item-user-logo img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  -o-object-fit: cover;
+     object-fit: cover;
+}
+.mainProduct__reviews-item-user-name {
+  width: -moz-fit-content;
+  width: fit-content;
+  font-weight: 600;
+}
+.mainProduct__reviews-item-estimation {
+  font-size: 1.25em;
+}
+.mainProduct__reviews-item-top {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+.mainProduct__reviews-item-section-title {
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+.mainProduct__reviews-item-section-text {
+  margin-bottom: 20px;
+}
 
 .brandbox {
   display: flex;
@@ -3481,6 +3608,20 @@ picture {
   .mainProduct__bottom-seller-right {
     font-size: 10px;
   }
+  .mainProduct__reviews {
+    padding: 10px;
+    font-size: 12px;
+  }
+  .mainProduct__reviews-top {
+    margin-bottom: 10px;
+  }
+  .mainProduct__reviews-bottom {
+    height: calc(100% - 30px);
+  }
+  .mainProduct__reviews-item-user {
+    height: 2em;
+    font-size: 14px;
+  }
 }
 @media (max-width: 991.98px) {
   .estimation {
@@ -3558,6 +3699,29 @@ picture {
   .mainProduct__bottom-deliveryInfo {
     font-size: 14px;
   }
+  .mainProduct__reviews {
+    border-radius: 10px;
+    font-size: 10px;
+  }
+  .mainProduct__reviews-top {
+    margin-bottom: 10px;
+  }
+  .mainProduct__reviews-bottom {
+    height: calc(100% - 30px);
+    gap: 10px;
+  }
+  .mainProduct__reviews-item-top {
+    margin-bottom: 10px;
+  }
+  .mainProduct__reviews-item-user {
+    font-size: 12px;
+  }
+  .mainProduct__reviews-item-section-title {
+    margin-bottom: 5px;
+  }
+  .mainProduct__reviews-item-section-text {
+    margin-bottom: 10px;
+  }
 }
 @media (max-width: 767.98px) {
   .estimation {
@@ -3584,6 +3748,9 @@ picture {
     gap: 30px;
   }
   .mainProduct__bottom-reviewsImg {
+    flex: 0 0 15%;
+  }
+  .mainProduct__bottom-reviewsImg-blur {
     flex: 0 0 15%;
   }
   .mainProduct__bottom-seller-info {

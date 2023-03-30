@@ -213,7 +213,7 @@
   transition: 0.3s;
   opacity: 0;
 
-  &.active{z-index: 10; pointer-events: all; top: 50%; opacity: 1;}
+  &.active{z-index: 101; pointer-events: all; top: 50%; opacity: 1;}
 
   &-close{
     display: flex; justify-content: flex-end;

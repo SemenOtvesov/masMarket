@@ -172,7 +172,8 @@ export default ()=>{
                 <Route path='favorites' element={<MainFavoritesPage user={user} userFavoritesList={userFavoritesList} quantityEl={quantityEl}/>}/>
                 <Route path='basket' element={<MainBasketPage user={user} userBasketProds={userBasketProds} quantityEl={quantityEl}/>}/>
                 <Route path='product/:idProduct' element={<MainProductPage userBasketProds={userBasketProds} 
-                userFavoritesList={userFavoritesList} storage={storage} equalSidesFn={equalSidesFn} firebaseConfig={firebaseConfig}/>}/>
+                userFavoritesList={userFavoritesList} storage={storage} equalSidesFn={equalSidesFn} 
+                firebaseConfig={firebaseConfig} appLoaderImg={appLoaderImg}/>}/>
                 <Route path='category/:nameCategory' element={<MainCategory quantityEl={quantityEl} firebaseConfig={firebaseConfig}/>}></Route>
             </Route>
         </Routes>
@@ -481,122 +482,140 @@ async function windowListenerClick(navigate, setUser, signOut, auth, storage, ev
         bodyBlur.classList.toggle('active')
         popap.classList.toggle('active')
     }
+
+    if(target.closest('#reviewsBtn')){
+        const reviewsBox = document.getElementById('reviewsBox')
+        reviewsBox.classList.toggle('active')
+
+        const questionBox = document.getElementById('questionBox')
+        questionBox.classList.remove('active')
+    }
+    if(target.closest('#questionBtn')){
+        const questionBox = document.getElementById('questionBox')
+        questionBox.classList.toggle('active')
+
+        const reviewsBox = document.getElementById('reviewsBox')
+        reviewsBox.classList.remove('active')
+    }
 }
 
 let checkMail = false; let checkPass = false; let checkName = false; let checkSubname = false; 
 let checkNum = false; let checkGender = false; let checkDate = false
 function windowListenerInput(setCheckRequest, event){
     const target = event.target
-    const button = target.closest('form').querySelector('button')
-    if(target.name === 'userMail'){
-        if(target.value.match('^[a-zA-Z0-9._%+-]+@[a-zA-Z.]+$')){checkTrue(); checkMail = true}else{checkFalse(); checkMail = false}
-        if(target.value === ''){
-            setCheckRequest(false)
-            target.nextElementSibling.classList.remove('valid')
-            target.nextElementSibling.classList.remove('notValid')
-        }
-    }
-    if(target.name === 'userPass'){
-        if(target.value.length < 9){
-            setCheckRequest(false)
-            target.parentElement.classList.remove('passValid')
-            target.parentElement.classList.add('passNotValid')
-            target.parentElement.lastElementChild.innerHTML = 'Минимум 10 символов'
-            checkPass = false
-        }else if(target.value.match('(?=.*?[a-zа-я])(?=.*?[A-ZА-Я])(?=.*?[0-9])[a-zа-яA-ZА-Я0-9]{10,}')){
-            target.parentElement.classList.add('passValid')
-            target.parentElement.classList.remove('passNotValid')
-            checkPass = true
-        }else{
-            target.parentElement.classList.remove('passValid')
-            target.parentElement.classList.add('passNotValid')
-            target.parentElement.lastElementChild.innerHTML = 'Пароль должен содержать хотя бы одну строчную букву, одну прописную букву и одну цифру'
-            checkPass = false
-        }
-        if(target.value === ''){
-            checkPass = false
-            setCheckRequest(false)
-            target.parentElement.classList.remove('passNotValid')
-            target.parentElement.classList.remove('passValid')
-        }
-    }
-    if(target.name === 'userName' || target.name === 'userSubname'){
-        if(target.value.match('[а-яА-Я]')){
-            checkTrue();
-            target.parentElement.classList.remove('passNotValid')
-            if(target.name === 'userName'){checkName = true}else{checkSubname = true}
-        }else{
-            checkFalse()
-            target.parentElement.classList.add('passNotValid')
-            target.parentElement.lastElementChild.innerHTML = 'Пожалуйста используйте русский язык'
-            if(target.name === 'userName'){checkName = false}else{checkSubname = false}
-        }
-        if(target.value === ''){
-            setCheckRequest(false)
-            target.nextElementSibling.classList.remove('valid')
-            target.nextElementSibling.classList.remove('notValid')
-            target.parentElement.classList.remove('passNotValid')
-            if(target.name === 'userName'){checkName = false}else{checkSubname = false}
-        }
-    }
-    if(target.name === 'userPhone'){
-        let checkKey = false
-        if(target.value.match('^[+7|7|8]')){
-            checkNum = false
-            if(target.value.length > 10){
-                if(target.value.match('^[+7|7|8][0-9]{10,12}$')){
-                    checkKey = false
-                    checkNum = true
-                }else{checkKey = true;}
+    if(target.closest('form')){
+        const button = target.closest('form').querySelector('button')
+        if(target.name === 'userMail'){
+            if(target.value.match('^[a-zA-Z0-9._%+-]+@[a-zA-Z.]+$')){checkTrue(); checkMail = true}else{checkFalse(); checkMail = false}
+            if(target.value === ''){
+                setCheckRequest(false)
+                target.nextElementSibling.classList.remove('valid')
+                target.nextElementSibling.classList.remove('notValid')
             }
-        }else{checkKey = true}
-
-        if(checkKey){
-            checkNum = false
-            checkFalse()
-            target.parentElement.classList.add('passNotValid')
-            target.parentElement.lastElementChild.innerHTML = 'Пожалуйста используйте номер Российского оператора'
-        }else{
-            checkTrue()
-            target.parentElement.classList.remove('passNotValid')
         }
-        if(target.value === ''){
+        if(target.name === 'userPass'){
+            if(target.value.length < 9){
+                setCheckRequest(false)
+                target.parentElement.classList.remove('passValid')
+                target.parentElement.classList.add('passNotValid')
+                target.parentElement.lastElementChild.innerHTML = 'Минимум 10 символов'
+                checkPass = false
+            }else if(target.value.match('(?=.*?[a-zа-я])(?=.*?[A-ZА-Я])(?=.*?[0-9])[a-zа-яA-ZА-Я0-9]{10,}')){
+                target.parentElement.classList.add('passValid')
+                target.parentElement.classList.remove('passNotValid')
+                checkPass = true
+            }else{
+                target.parentElement.classList.remove('passValid')
+                target.parentElement.classList.add('passNotValid')
+                target.parentElement.lastElementChild.innerHTML = 'Пароль должен содержать хотя бы одну строчную букву, одну прописную букву и одну цифру'
+                checkPass = false
+            }
+            if(target.value === ''){
+                checkPass = false
+                setCheckRequest(false)
+                target.parentElement.classList.remove('passNotValid')
+                target.parentElement.classList.remove('passValid')
+            }
+        }
+        if(target.name === 'userName' || target.name === 'userSubname'){
+            if(target.value.match('[а-яА-Я]')){
+                checkTrue();
+                target.parentElement.classList.remove('passNotValid')
+                if(target.name === 'userName'){checkName = true}else{checkSubname = true}
+            }else{
+                checkFalse()
+                target.parentElement.classList.add('passNotValid')
+                target.parentElement.lastElementChild.innerHTML = 'Пожалуйста используйте русский язык'
+                if(target.name === 'userName'){checkName = false}else{checkSubname = false}
+            }
+            if(target.value === ''){
+                setCheckRequest(false)
+                target.nextElementSibling.classList.remove('valid')
+                target.nextElementSibling.classList.remove('notValid')
+                target.parentElement.classList.remove('passNotValid')
+                if(target.name === 'userName'){checkName = false}else{checkSubname = false}
+            }
+        }
+        if(target.name === 'userPhone'){
+            let checkKey = false
+            if(target.value.match('^[+7|7|8]')){
+                checkNum = false
+                if(target.value.length > 10){
+                    if(target.value.match('^[+7|7|8][0-9]{10,12}$')){
+                        checkKey = false
+                        checkNum = true
+                        console.log('sdf')
+                    }else{checkKey = true;}
+                }
+            }else{checkKey = true}
+
+            if(checkKey){
+                checkNum = false
+                checkFalse()
+                target.parentElement.classList.add('passNotValid')
+                target.parentElement.lastElementChild.innerHTML = 'Пожалуйста используйте номер Российского оператора'
+            }else{
+                checkTrue()
+                target.parentElement.classList.remove('passNotValid')
+            }
+            if(target.value === ''){
+                setCheckRequest(false)
+                target.nextElementSibling.classList.remove('valid')
+                target.nextElementSibling.classList.remove('notValid')
+                target.parentElement.classList.remove('passNotValid')
+                checkNum = false
+            }
+        }
+        if(target.closest('.mainUserProfile__popap-radioBtn-box-item')){checkGender = true}
+
+        if(target.closest('form').id === 'popapMain'){
+            if(checkMail && checkPass){
+                button.classList.remove('disabled')
+                button.disabled = false
+            }else{
+                button.classList.add('disabled')
+                button.disabled = true
+            }
+        }else{
+            if(checkMail && checkPass && checkName && checkSubname && checkNum && checkGender && checkDate){
+                button.classList.remove('disabled')
+                button.disabled = false
+            }else{
+                button.classList.add('disabled')
+                button.disabled = true
+            }
+        }
+
+        function checkTrue(){
+            setCheckRequest(true)
+            target.nextElementSibling.classList.add('valid')
+            target.nextElementSibling.classList.remove('notValid')
+        }
+        function checkFalse(){
             setCheckRequest(false)
             target.nextElementSibling.classList.remove('valid')
-            target.nextElementSibling.classList.remove('notValid')
-            target.parentElement.classList.remove('passNotValid')
-            checkNum = false
+            target.nextElementSibling.classList.add('notValid')
         }
-    }
-    if(target.closest('.mainUserProfile__popap-radioBtn-box-item')){checkGender = true}
-
-    if(target.closest('form').id === 'popapMain'){
-        if(checkMail && checkPass){
-            button.classList.remove('disabled')
-            button.disabled = false
-        }else{
-            button.classList.add('disabled')
-            button.disabled = true
-        }
-    }else{
-        if(checkMail && checkPass && checkName && checkSubname && checkNum && checkGender && checkDate){
-            button.classList.remove('disabled')
-            button.disabled = false
-        }else{
-            button.classList.add('disabled')
-            button.disabled = true
-        }
-    }
-
-    function checkTrue(){
-        setCheckRequest(true)
-        target.nextElementSibling.classList.add('valid')
-        target.nextElementSibling.classList.remove('notValid')
-    }
-    function checkFalse(){
-        setCheckRequest(false)
-        target.nextElementSibling.classList.remove('valid')
-        target.nextElementSibling.classList.add('notValid')
     }
 }
 
@@ -608,7 +627,12 @@ function windowListenerSubmit(setRegInfo, event){
     const userPass = target.querySelector('[name=userPass]').value
 
     if(target.id === 'popapBackWall'){
-        createUserWithEmailAndPassword(auth, userMail, userPass)
+        createUserWithEmailAndPassword(auth, userMail, userPass).catch(err=>{
+            target.querySelector('button').classList.add('passNotValid')
+            setTimeout(()=>{
+                target.querySelector('button').classList.remove('passNotValid')
+            },2000)
+        })
 
         const userName = target.querySelector('[name=userName]').value
         const userSubname = target.querySelector('[name=userSubname]').value
@@ -678,11 +702,13 @@ function appLoaderImg(storage){
     const advs = document.querySelectorAll('#adv')
     const icons = document.querySelectorAll('#icon')
     const brandIcon = document.querySelectorAll('#brandIcon')
+    const logoes = document.querySelectorAll('#logo')
 
     prodsEach()
     advsEach()
     iconsEach()
     brandIconEach()
+    logoEach()
     async function prodsEach(){
         if(products){
             for(const el of products){
@@ -841,6 +867,35 @@ function appLoaderImg(storage){
             }
         }
     }
+    async function logoEach(){
+        if(logoes){
+            for(const el of logoes){
+                await getDownloadURL(ref(storage, `image/users/logo/webp/${el.dataset.userUid}.webp`))
+                .then((url) => {
+                    el.children[1].setAttribute('srcSet', url)
+                    el.classList.remove('loading-img')
+                    el.firstElementChild.style.width = '100%'
+
+                    getDownloadURL(ref(storage, `image/users/logo/png/${el.dataset.userUid}.png`))
+                    .then((url) => {
+                        el.children[2].setAttribute('src', url)
+                        el.classList.remove('loading-img')
+                        el.firstElementChild.style.width = '100%'
+                    })
+                    .catch((error) => {
+                        el.classList.add('errorDownload')
+                        el.classList.remove('loading-img')
+                        el.firstElementChild.style.width = '100%'
+                    });
+                })
+                .catch((error) => {
+                    el.classList.add('errorDownload')
+                    el.classList.remove('loading-img')
+                    el.firstElementChild.style.width = '100%'
+                });
+            }
+        }
+    }
 }
 
 function addContentBasketRight(oldPrise, newPrise, prodsWeight){
@@ -948,8 +1003,24 @@ function pngTransformWebp(pngImg, userUid, storage, setCheckUploadLogoUser){
 function mobileFooterMargin(scrollWidth){
     const footer = document.querySelector('.footer')
     const headerItemBtnBox = document.getElementById('headerItemBtnBox')
-    if(scrollWidth < 426){
-        footer.style.marginBottom = headerItemBtnBox.offsetHeight + 'px'
+    const prisebox = document.querySelector('.mainProduct__bottom-order')
+    const reviewsBox = document.getElementById('reviewsBox')
+    const questionBox = document.getElementById('questionBox')
+    if(scrollWidth < 726){
+        if(prisebox){footer.style.marginBottom = prisebox.offsetHeight + 'px'}
+        if(scrollWidth < 426){
+            if(prisebox){
+                footer.style.marginBottom = prisebox.offsetHeight + headerItemBtnBox.offsetHeight + 'px'
+            }else{
+                footer.style.marginBottom = headerItemBtnBox.offsetHeight + 'px'
+            }
+            if(reviewsBox){
+                reviewsBox.style.marginBottom = headerItemBtnBox.offsetHeight + 'px'
+            }
+            if(questionBox){
+                questionBox.style.marginBottom = headerItemBtnBox.offsetHeight + 'px'
+            }
+        }
     }
 }
 
