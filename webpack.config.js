@@ -1,5 +1,7 @@
 
-const path = require('node:path')
+const path = require('node:path');
+const express = require('express');
+const app = express();
 const webpack = require('webpack')
 const HTMLPlug = require('html-webpack-plugin')
 const {CleanWebpackPlugin} = require('clean-webpack-plugin')
@@ -9,6 +11,14 @@ const CssMinimizerWebpackPlugin = require('css-minimizer-webpack-plugin')
 const CopyPlugin = require('copy-webpack-plugin')
 
 const isDev = process.env.NODE_ENV === 'development'
+
+app.use(express.static(path.join(__dirname, 'build')));
+
+app.get('/', function (req, res) {
+    res.sendFile(path.join(__dirname, 'build', 'index.html'));
+});
+
+app.listen(9000);
 
 function optimization(){
     const obj = { splitChunks: {

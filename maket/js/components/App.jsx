@@ -514,7 +514,7 @@ function windowListenerInput(setCheckRequest, event){
             }
         }
         if(target.name === 'userPass'){
-            if(target.value.length < 9){
+            if(target.value.length < 10){
                 setCheckRequest(false)
                 target.parentElement.classList.remove('passValid')
                 target.parentElement.classList.add('passNotValid')
