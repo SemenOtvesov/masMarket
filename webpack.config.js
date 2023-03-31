@@ -12,7 +12,7 @@ const CopyPlugin = require('copy-webpack-plugin')
 
 const isDev = process.env.NODE_ENV === 'development'
 
-app.use(express.static(path.join(__dirname, 'build')));
+app.use(express.static(path.join(__dirname, 'docs')));
 
 app.get('/*', function (req, res) {
     res.sendFile(path.join(__dirname, 'docs', 'index.html'));
