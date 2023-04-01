@@ -1,6 +1,6 @@
 {
     "rewrites": [
-    {"source": "/","destination": "/"},
-    {"source": "/userProfile","destination": "/"}
+        { "src": "/", "dest": "/" },
+        { "src": "/userProfile", "dest": "/" }
   ]
 }
