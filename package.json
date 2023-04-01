@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "my one experience in webpack",
   "private": true,
-  "homepage": "https://masmarket-git-fullproject-semenotvesov.vercel.app",
+  "homepage": ".",
   "scripts": {
     "build": "cross-env NODE_ENV=production webpack --mode production",
     "dev": "cross-env NODE_ENV=development webpack --mode development",
