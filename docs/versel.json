@@ -1,7 +1,6 @@
 {
     "rewrites": [
-    {
-      "source": "/[^.]+",
-      "destination": "/index.html"
-    }
+    {"source": "/","destination": "/"},
+    {"source": "/userProfile","destination": "/"}
   ]
+}
